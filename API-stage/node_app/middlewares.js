@@ -108,5 +108,53 @@ console.log('user!!!', data)
   },
   errorHandler: function(err, req, res, next) {
     res.status(err.status || 500).send(err.message);
-  }
+  },
+    validateAdminUser: function(req, res, next) {
+        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
+        const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
+        console.log('user!!!', data)
+        db.AdminUser.findOne({where: {id: data.id},
+            include: [{
+                model: db.Role,
+                foreignKey:'role_id',
+                as: 'role'
+            }]})
+            .then((user) => {
+            if (!user) return next(new Errors.Validation("User not exist"));
+        if (user.role.role_name !== 'admin') return next(new Errors.Validation("you are not a admin")); // todo: check user role
+        req.user = user;
+        //console.log('user!!!', user)
+
+        helper.getCountrySettingsByCountryId(user.country_id)
+            .then(countrySettings=>{
+            req.countrySettings = countrySettings;
+        next()
+    })
+    })
+        .catch(err => res.send({ err: err.message }));
+    },
+    validateAdminUserOrSameUser: function(req, res, next) {
+        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
+        const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
+        console.log('user!!!', data)
+        db.AdminUser.findOne({where: {id: data.id},
+            include: [{
+                model: db.Role,
+                foreignKey:'role_id',
+                as: 'role'
+            }]})
+            .then((user) => {
+            if (!user) return next(new Errors.Validation("User not exist"));
+        if (user.role.role_name !== 'admin' && user.id !== req.params['id']) return next(new Errors.Validation("you are not a admin")); // todo: check user role
+        req.user = user;
+        //console.log('user!!!', user)
+
+        helper.getCountrySettingsByCountryId(user.country_id)
+            .then(countrySettings=>{
+            req.countrySettings = countrySettings;
+        next()
+    })
+    })
+        .catch(err => res.send({ err: err.message }));
+    }
 }

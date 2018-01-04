@@ -62,7 +62,7 @@ function init_umbrella_api(){
     next();
   });
 
-  /*app.use(session({
+  app.use(session({
     secret: randomstring.generate(12),
     resave: false,
     saveUninitialized: true,
@@ -70,14 +70,15 @@ function init_umbrella_api(){
     cookie: { secure: false,
       httpOnly: false,
       expires: expiryDate }
-  }))*/
+  }))
 
   app.set('etag', false);
 app.get('/apple', function (req, res) {
   res.send('Hello World!')
 });
   app.use('/api', require('./routes'));
-console.log("routes loaded");
+    app.use('/api/admin/', require('./admin_routes'));
+    console.log("routes loaded");
   app.use(middlewares.errorHandler);
   if(config.envoirnment=="dev")
 {
@@ -90,7 +91,7 @@ db.sequelize
   .then(function() {
     console.log("db synced");
       console.log("entered");
-   
+
   })
   .catch(err => {
     console.log('err', err.message)

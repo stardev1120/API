@@ -27,5 +27,6 @@
   "settingsPaymentTermErr":"Cant find settingsPaymentTerm for current apply_loan_amount",
   "notExistLoan":"Loan not exist or status not processed",
   "blockedUser":"User is blocked",
-  "noUserFindByFbEmail":"No user was finded by fb email"
+  "noUserFindByFbEmail":"No user was finded by fb email",
+  "oldPasswordNotValid": "Old password is not valid"
 }
