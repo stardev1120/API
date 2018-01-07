@@ -113,23 +113,50 @@ console.log('user!!!', data)
         if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
         const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
+        if(data.valid !== 1) return next(new Errors.Validation("No user token"));
+
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
                 model: db.Role,
                 foreignKey:'role_id',
                 as: 'role'
             }]})
-            .then((user) => {
-            if (!user) return next(new Errors.Validation("User not exist"));
-        if (user.role.role_name !== 'admin') return next(new Errors.Validation("you are not a admin")); // todo: check user role
-        req.user = user;
-        //console.log('user!!!', user)
+            .then((adminUser) => {
+            if (!adminUser) return next(new Errors.Validation("User not exist"));
 
-        helper.getCountrySettingsByCountryId(user.country_id)
-            .then(countrySettings=>{
-            req.countrySettings = countrySettings;
-        next()
-    })
+
+        const{url, body, params, method, originalUrl,baseUrl}=req;
+        const action_req = {
+            url: url,
+            body: body,
+            params: params,
+            method: method,
+            originalUrl:originalUrl,
+            baseUrl:baseUrl
+        }
+        db.UserActivityLog.create({
+            admin_user_id: adminUser.id,
+            action: JSON.stringify(action_req),
+            payload:""
+        }).then(()=>{
+        });
+
+        db.FeatureACL.findOne({where: {role_id: adminUser.role_id, feature_api_url: req.baseUrl}})
+            .then((right) => {
+            if(!right)  return next(new Errors.Validation("you are not a admin"));
+
+        if(req.body['country_id'] || req.params['country_id']) {
+            const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
+            db.AdminuserCountry.findOne({where: {adminuser_id: adminUser.id, country_id: country_id}}).then((exist)=>{
+                if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
+            req.user = adminUser;
+            next();
+        })
+        } else {
+            req.user = adminUser;
+            next();
+        }
+    });
     })
         .catch(err => res.send({ err: err.message }));
     },
@@ -137,23 +164,46 @@ console.log('user!!!', data)
         if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
         const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
+        if(data.valid !== 1) return next(new Errors.Validation("No user token"));
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
                 model: db.Role,
                 foreignKey:'role_id',
                 as: 'role'
             }]})
-            .then((user) => {
-            if (!user) return next(new Errors.Validation("User not exist"));
-        if (user.role.role_name !== 'admin' && user.id !== req.params['id']) return next(new Errors.Validation("you are not a admin")); // todo: check user role
-        req.user = user;
-        //console.log('user!!!', user)
+            .then((adminUser) => {
+            if (!adminUser) return next(new Errors.Validation("User not exist"));
+        const{url, body, params, method, originalUrl, baseUrl}=req;
+        const action_req = {
+            url: url,
+            body: body,
+            params: params,
+            method: method,
+            originalUrl:originalUrl,
+            baseUrl:baseUrl
+        }
+        db.UserActivityLog.create({
+            admin_user_id: adminUser.id,
+            action: JSON.stringify(action_req),
+            payload:""
+        }).then();
+        db.FeatureACL.findOne({where: {role_id: adminUser.role_id, feature_api_url: req.baseUrl}})
+            .then((right) => {
+                if(!right)  return next(new Errors.Validation("you are not a admin"));
 
-        helper.getCountrySettingsByCountryId(user.country_id)
-            .then(countrySettings=>{
-            req.countrySettings = countrySettings;
-        next()
-    })
+                if(req.body['country_id'] || req.params['country_id']) {
+                    const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
+                    db.AdminuserCountry.findOne({where: {adminuser_id: adminUser.id, country_id: country_id}}).then((exist)=>{
+                        if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
+                    req.user = adminUser;
+                    next();
+                })
+                } else {
+                    req.user = adminUser;
+                    next();
+                }
+
+        });
     })
         .catch(err => res.send({ err: err.message }));
     }

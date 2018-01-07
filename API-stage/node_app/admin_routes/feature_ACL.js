@@ -12,23 +12,23 @@ const sendMail = require('../helper/sendMail');
 
 
 router.post('/', middlewares.validateAdminUser , (req, res, next) => {
-    const {adminuser_id, country_id} = req.body;
+    const {role_id, feature_api_url} = req.body;
 
-let query = {adminuser_id: adminuser_id, country_id: country_id};
+let query = {role_id: role_id, feature_api_url: feature_api_url};
 
-db.AdminuserCountry.create(query)
-    .then(adminuserCountry => {
-    res.send(adminuserCountry);
+db.FeatureACL.create(query)
+    .then(featureACL => {
+    res.send(featureACL);
 })
 .catch(err => res.send({err: err.message}))
 })
 
 router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.AdminuserCountry.findAll({where: {},
+    db.FeatureACL.findAll({where: {},
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Role,
+        foreignKey:'role_id',
+        as: 'role'
     }]})
     .then((companies) => {
     res.send(companies)
@@ -37,34 +37,34 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 });
 
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    db.AdminuserCountry.findOne({where: {id: req.params['id']} ,
+    db.FeatureACL.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Role,
+        foreignKey:'role_id',
+        as: 'role'
     }]})
-    .then((adminuserCountry) => {
-    res.send(adminuserCountry)
+    .then((featureACL) => {
+    res.send(featureACL)
 })
 .catch(err => next(err));
 });
 
 router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    const {adminuser_id, country_id} = req.body;
-db.AdminuserCountry.findOne({where: {id: req.params['id']}})
-    .then((adminuserCountry) => {
-    if(!adminuserCountry) return next(new Errors.Validation("admin user country not exist"));
-adminuserCountry.adminuser_id = adminuser_id;
-adminuserCountry.country_id = country_id;
-adminuserCountry.save()
-    .then(user => res.send(adminuserCountry));
+    const {role_id, feature_api_url} = req.body;
+db.FeatureACL.findOne({where: {id: req.params['id']}})
+    .then((featureACL) => {
+    if(!featureACL) return next(new Errors.Validation("Feature ACL not exist"));
+featureACL.role_id = role_id;
+featureACL.feature_api_url = feature_api_url;
+featureACL.save()
+    .then(user => res.send(featureACL));
 })
 .catch(err => next(err));
 });
 
 
 router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
-    db.AdminuserCountry.destroy({where: {id: req.params['id']}})
+    db.FeatureACL.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
 });

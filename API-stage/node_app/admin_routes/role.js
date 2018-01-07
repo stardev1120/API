@@ -12,24 +12,19 @@ const sendMail = require('../helper/sendMail');
 
 
 router.post('/', middlewares.validateAdminUser , (req, res, next) => {
-    const {adminuser_id, country_id} = req.body;
+    const {role_id, role_name, max_session_time} = req.body;
 
-let query = {adminuser_id: adminuser_id, country_id: country_id};
+let query = {role_id: role_id, role_name: role_name, max_session_time: max_session_time};
 
-db.AdminuserCountry.create(query)
-    .then(adminuserCountry => {
-    res.send(adminuserCountry);
+db.Role.create(query)
+    .then(role => {
+    res.send(role);
 })
 .catch(err => res.send({err: err.message}))
 })
 
 router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.AdminuserCountry.findAll({where: {},
-    include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
-    }]})
+    db.Role.findAll({where: {}})
     .then((companies) => {
     res.send(companies)
 })
@@ -37,34 +32,30 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 });
 
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    db.AdminuserCountry.findOne({where: {id: req.params['id']} ,
-    include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
-    }]})
-    .then((adminuserCountry) => {
-    res.send(adminuserCountry)
+    db.Role.findOne({where: {id: req.params['id']}})
+    .then((role) => {
+    res.send(role)
 })
 .catch(err => next(err));
 });
 
 router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    const {adminuser_id, country_id} = req.body;
-db.AdminuserCountry.findOne({where: {id: req.params['id']}})
-    .then((adminuserCountry) => {
-    if(!adminuserCountry) return next(new Errors.Validation("admin user country not exist"));
-adminuserCountry.adminuser_id = adminuser_id;
-adminuserCountry.country_id = country_id;
-adminuserCountry.save()
-    .then(user => res.send(adminuserCountry));
+    const {role_id, role_name, max_session_time} = req.body;
+db.Role.findOne({where: {id: req.params['id']}})
+    .then((role) => {
+    if(!role) return next(new Errors.Validation("Role not exist"));
+role.role_id = role_id;
+role.role_name = role_name;
+role.max_session_time = max_session_time;
+role.save()
+    .then(user => res.send(role));
 })
 .catch(err => next(err));
 });
 
 
 router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
-    db.AdminuserCountry.destroy({where: {id: req.params['id']}})
+    db.Role.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
 });

@@ -62,7 +62,7 @@ function init_umbrella_api(){
     next();
   });
 
-  app.use(session({
+  /*app.use(session({
     secret: randomstring.generate(12),
     resave: false,
     saveUninitialized: true,
@@ -70,7 +70,7 @@ function init_umbrella_api(){
     cookie: { secure: false,
       httpOnly: false,
       expires: expiryDate }
-  }))
+  }))*/
 
   app.set('etag', false);
 app.get('/apple', function (req, res) {

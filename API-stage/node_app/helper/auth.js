@@ -25,6 +25,11 @@ module.exports = {
        expiresIn: '2h'
    });
  },
+createJwtWithexpiresIn: (data, expiresIn) => {
+    return jwt.sign(data, config.JWT_SALT, {
+        expiresIn: expiresIn
+    });
+},
   verifyJwt: (jwtString) => {
       return jwt.verify(jwtString, config.JWT_SALT);
   },

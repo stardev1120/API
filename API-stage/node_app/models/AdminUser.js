@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER(1),
             defaultValue: 0
         },
-        max_session_time: DataTypes.DOUBLE,
+        max_session_time: DataTypes.STRING,
         FAfield: DataTypes.STRING// todo ask customer about 2 fa field
     },{
         underscored: true

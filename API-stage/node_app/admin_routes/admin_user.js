@@ -14,28 +14,23 @@ var md5 = require('md5');
 router.post('/login', (req, res, next) => {
     const password = md5(req.body.password);
     db.AdminUser.findOne({
-        where: {'name': req.body.userName, 'password':  password}
-    }).then((user) => {
+        where: {'email': req.body.email, 'password':  password}
+    }).then((adminUser) => {
 
-        if (!user) return next(new Errors.Validation("not exist user"));
+        if (!adminUser) return next(new Errors.Validation("not exist adminUser"));
 
-        user.update({number_password_attempt: user.number_password_attempt+1}).then();
+        adminUser.update({number_password_attempt: adminUser.number_password_attempt+1}).then();
 
-        delete user.password;
-
-        req.session.cookie.maxAge = user.max_session_time;
-        req.session.user = user;
-
-        res.send({token: auth.createJwt({id: user.id})});
+        res.send({token: auth.createJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)});
     })
     .catch(err => res.send({err: err.message}))
 });
 
 router.post('/forget-password', (req, res, next) => {
     db.AdminUser.findOne({where: {email: req.body.email}})
-    .then((user) => {
-    if (!user) return next(new Errors.Validation("User not exist"));
-const token=auth.createJwt({id: user.id});
+    .then((adminUser) => {
+    if (!adminUser) return next(new Errors.Validation("User not exist"));
+const token=auth.createJwt({id: adminUser.id});
 const baselink='http://localhost:3000/reset/';// todo we need to change it to be configurable.
 const link = `${baselink}${token}`;
 
@@ -56,10 +51,10 @@ router.put('/reset/:token', (req, res, next) => {
 
     db.AdminUser.findOne({
         where: {id: data.id}
-    }).then((user) => {
-        if (!user) return next(new Errors.Validation(dictionary.userNoAccesToken));
+    }).then((adminUser) => {
+        if (!adminUser) return next(new Errors.Validation(dictionary.userNoAccesToken));
 
-        user.update({
+        adminUser.update({
             password: md5(new_password)
         }).then((result)=>{
             res.send({"message": "done"});
@@ -84,16 +79,12 @@ router.put('/change-password', middlewares.validateAdminUser, (req, res, next) =
 
 
 router.post('/logout', middlewares.validateAdminUser, function (req, res) {
-    // req.session.reset();
-    req.session.destroy();
-    res.send("logout success!");
+    res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:0}, 1)});
+    //res.send("logout success!");
 });
 
 router.post('/renew-session', middlewares.validateAdminUser, function (req, res) {
-    req.session.regenerate(req,(obj)=> console.log(obj));
-    req.session.cookie.maxAge = req.user.max_session_time;
-    req.session.user = req.user;
-    res.send("renew session success!");
+    res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:1}, req.user.max_session_time)});
 });
 
 
@@ -102,7 +93,7 @@ router.get('/md5/:password', function (req, res) {
 });
 
 router.post('/', middlewares.validateAdminUser , (req, res, next) => {
-    const {name, email, password, company_id, role_id, max_session_time, FAfield} = req.body;
+    const {name, email, password, company_id, role_id, max_session_time, FAfield, countries} = req.body;
 
     let query = {
         name: name,
@@ -115,8 +106,17 @@ router.post('/', middlewares.validateAdminUser , (req, res, next) => {
     };
 
     db.AdminUser.create(query)
-        .then(user => {
-                res.send({token: auth.createJwt({id: user.id})});
+        .then(adminUser => {
+
+ var actions= countries.map((country) => {
+     return db.AdminuserCountry.create({adminuser_id: adminUser.id, country_id: country})
+    })
+var results = Promise.all(actions);
+results.then(data =>
+{
+    res.send(adminUser.id);
+});
+
         })
         .catch(err => res.send({err: err.message}))
  })
@@ -148,19 +148,38 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 });
 
  router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-     const {name, email, company_id, role_id, max_session_time, FAfield, number_password_attempt} = req.body;
+     const {name, email, company_id, role_id, max_session_time, FAfield, number_password_attempt, countries} = req.body;
     db.AdminUser.findOne({where: {id: req.params['id']}})
-    .then((user) => {
-        if(!user) return next(new Errors.Validation("User not exist"));
-        user.name = name;
-        user.email = email;
-        user.company_id = company_id;
-        user.role_id = role_id;
-        user.max_session_time = max_session_time;
-        user.FAfield = FAfield;
-        user.number_password_attempt = number_password_attempt;
-        user.save()
-            .then(user => res.send(user));
+    .then((adminUser) => {
+        if(!adminUser) return next(new Errors.Validation("User not exist"));
+        adminUser.name = name;
+        adminUser.email = email;
+        adminUser.company_id = company_id;
+        adminUser.role_id = role_id;
+        adminUser.max_session_time = max_session_time;
+        adminUser.FAfield = FAfield;
+        adminUser.number_password_attempt = number_password_attempt;
+        adminUser.save()
+            .then(() => {
+            db.AdminuserCountry.destroy({
+            where: {adminuser_id: adminUser.id},
+            truncate: true
+        }).then(()=>{
+            if(countries && countries.length > 0){
+    var actions= countries.map((country) => {
+            return db.AdminuserCountry.create({adminuser_id: adminUser.id, country_id: country})
+        })
+    var results = Promise.all(actions);
+    results.then(data =>
+    {
+        res.send(adminUser)
+});
+} else {
+    res.send(adminUser)
+}
+        })
+
+            });
     })
     .catch(err => next(err));
  });

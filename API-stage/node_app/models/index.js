@@ -90,11 +90,11 @@ db['Loan'].hasMany(db['Collection']);
 db['CollectionHistory'].belongsTo(db['Loan']);
 db['Loan'].hasMany(db['CollectionHistory']);
 
-db['Company'].belongsTo(db['Country']);
+db['Company'].belongsTo(db['Country'], {foreignKey: "country_id", as: "country"});
 db['Country'].hasMany(db['Company']);
 
 
-db['AdminUser'].belongsTo(db['Company']);
+db['AdminUser'].belongsTo(db['Company'], {foreignKey: "company_id", as: "company"});
 db['Company'].hasMany(db['AdminUser']);
 
 db['AdminUser'].belongsTo(db['Role'], {foreignKey: "role_id", as: "role"});
@@ -106,10 +106,10 @@ db['AdminUser'].hasMany(db['AdminuserCountry']);
 db['AdminuserCountry'].belongsTo(db['Country']);
 db['Country'].hasMany(db['AdminuserCountry']);
 
-db['DistributionCenter'].belongsTo(db['Country']);
+db['DistributionCenter'].belongsTo(db['Country'], {foreignKey: "country_id", as: "country"});
 db['Country'].hasMany(db['DistributionCenter']);
 
-db['DistributionCenter'].belongsTo(db['Company']);
+db['DistributionCenter'].belongsTo(db['Company'], {foreignKey: "company_id", as: "company"});
 db['Company'].hasMany(db['DistributionCenter']);
 
 db['FeatureACL'].belongsTo(db['Role']);
