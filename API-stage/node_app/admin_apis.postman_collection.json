@@ -7,6 +7,1202 @@
 	},
 	"item": [
 		{
+			"name": "Task 2",
+			"description": "",
+			"item": [
+				{
+					"name": "user listing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"test\",\n\t\"email\": \"test\",\n\t\"phone_number\": \"11111111\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/user/search",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"user",
+								"search"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "user details by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"test\",\n\t\"email\": \"test\",\n\t\"phone_number\": \"11111111\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/user/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"user",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create country",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Egypt\",\n\t\"country_code\":\"eg\",\n\t\"status\":1\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update country",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 5,\n    \"name\": \"Egypt\",\n    \"country_code\": \"egy\",\n    \"status\": false\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country",
+								"5"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete country",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country",
+								"5"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all countries",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get country by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country",
+								"6"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create country-setting",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"setting 1\",\n\t\"value\":\"1\",\n\t\"country_id\": 6\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country-setting",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-setting"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update country-setting",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3,\n    \"name\": \"setting 2\",\n    \"value\": \"2\",\n    \"country_id\": 6,\n    \"updated_at\": \"2018-01-09T11:01:53.394Z\",\n    \"created_at\": \"2018-01-09T11:01:53.394Z\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country-setting/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-setting",
+								"3"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete country-setting",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-setting/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-setting",
+								"3"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all country-setting",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-setting",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-setting"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get country-setting by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-setting/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-setting",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create non-supported-country-lead",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"country\": \"test\",\n\t\"ip_address\": \"0.0.0.0\",\n\t\"gps_location\": \"0\",\n\t\"email\": \"test@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/non-supported-country-lead",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"non-supported-country-lead"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update non-supported-country-lead",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"country\": \"test2\",\n    \"ip_address\": \"127.0.0.1\",\n    \"gps_location\": \"1\",\n    \"email\": \"test2@test.com\",\n    \"updated_at\": \"2018-01-09T11:46:19.974Z\",\n    \"created_at\": \"2018-01-09T11:46:19.974Z\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/non-supported-country-lead/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"non-supported-country-lead",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete non-supported-country-lead",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/non-supported-country-lead/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"non-supported-country-lead",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all non-supported-country-lead",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/non-supported-country-lead",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"non-supported-country-lead"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get non-supported-country-lead by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/non-supported-country-lead/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"non-supported-country-lead",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create country-investment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"amount_available\":11311,\n\t\"status\":\"2\",\n\t\"country_id\":6,\n\t\"loan_id\":3\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country-investment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-investment"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update country-investment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 2,\n    \"amount_available\": 12111,\n    \"status\": \"2\",\n    \"country_id\": 6,\n    \"loan_id\": 3,\n    \"updated_at\": \"2018-01-09T13:34:42.649Z\",\n    \"created_at\": \"2018-01-09T13:34:42.649Z\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/country-investment/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-investment",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete country-investment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-investment/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-investment",
+								"3"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all country-investment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-investment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-investment"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get country-investment by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/country-investment/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"country-investment",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all loans",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/loan",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"loan"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create loan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"date_taken\": null,\n        \"amount_taken\": 33323,\n        \"service_fee\": \"test\",\n        \"interest_rate\": null,\n        \"duration_of_loan\": null,\n        \"status\": \"1\",\n        \"amount_pending\": 111,\n        \"bank_credit_transaction\": null,\n        \"bank_credit_status\": null,\n        \"currency\": null,\n        \"created_at\": null,\n        \"updated_at\": null,\n        \"user_id\": 1,\n        \"user_payment_method_id\": null\n    }"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/loan",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"loan"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update loan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 6,\n    \"date_taken\": null,\n    \"amount_taken\": 33323555,\n    \"service_fee\": \"test55\",\n    \"interest_rate\": null,\n    \"duration_of_loan\": null,\n    \"status\": \"4\",\n    \"amount_pending\": 111,\n    \"bank_credit_transaction\": null,\n    \"bank_credit_status\": null,\n    \"currency\": null,\n    \"user_id\": 1,\n    \"user_payment_method_id\": null,\n    \"updated_at\": \"2018-01-09T14:39:48.610Z\",\n    \"created_at\": \"2018-01-09T14:39:48.610Z\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/loan/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"loan",
+								"6"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete loan",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/loan/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"loan",
+								"6"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get loan by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/loan/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"loan",
+								"3"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create collection",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"amount\": 444,\n        \"date\": null,\n        \"currency\": \"test\",\n        \"retry_date\": null,\n        \"status\": \"4\",\n        \"created_at\": null,\n        \"updated_at\": null,\n        \"loan_id\": 3\n    }"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/collection",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"collection"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all collections",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/collection",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"collection"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update collection",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 2,\n    \"amount\": 222,\n    \"date\": null,\n    \"currency\": \"test222\",\n    \"retry_date\": null,\n    \"status\": \"5\",\n    \"updated_at\": \"2018-01-09T14:53:47.779Z\",\n    \"created_at\": \"2018-01-09T14:53:47.779Z\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/collection/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"collection",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get collection by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/collection/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"collection",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "request view-profile-otp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/view-profile-otp",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"view-profile-otp"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "user response view-profile-otp",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"approval\": false\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/view-profile-otp/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJhZG1pbl91c2VyX2lkIjoyLCJpYXQiOjE1MTU1MTU5NDgsImV4cCI6MTUxNTUyMzE0OH0.ZruHjX4ZPiCgpskrCQyP8eea8eF0O-rmdP2XS5dCftU",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"view-profile-otp",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJhZG1pbl91c2VyX2lkIjoyLCJpYXQiOjE1MTU1MTU5NDgsImV4cCI6MTUxNTUyMzE0OH0.ZruHjX4ZPiCgpskrCQyP8eea8eF0O-rmdP2XS5dCftU"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "login",
 			"request": {
 				"method": "POST",
@@ -18,7 +1214,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": " {\r\n   \"userName\":\"test\",\r\n   \"password\": \"22222\"\r\n }"
+					"raw": " {\r\n   \"email\":\"test2@test.com\",\r\n   \"password\": \"33333\"\r\n }"
 				},
 				"url": {
 					"raw": "{{host}}/api/admin/admin-user/login",
@@ -293,7 +1489,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"test 2\",\n    \"email\": \"test2@test.com\",\n    \"password\": \"33333\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 1,\n    \"max_session_time\": 1111151511,\n    \"FAfield\": \"ssssss\"\n}"
+					"raw": "{\n    \"name\": \"test3\",\n    \"email\": \"test3@test.com\",\n    \"password\": \"33333\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 1,\n    \"max_session_time\": \"2h\",\n    \"FAfield\": \"ssss33ss\",\n    \"countries\": [\n    \t1,\n    \t2\n    \t]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/api/admin/admin-user",
@@ -326,10 +1522,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": 3,\n    \"name\": \"test2\",\n    \"email\": \"test2@test.com\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 0,\n    \"max_session_time\": 11111113,\n    \"FAfield\": \"asdasd dasd\"\n}"
+					"raw": "{\n    \"id\": 6,\n    \"name\": \"test6\",\n    \"email\": \"test6@test.com\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 0,\n    \"max_session_time\": \"h2\",\n    \"FAfield\": \"asdasd dasd\",\n    \"countries\": [\n    \t1\n    \t]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/api/admin/admin-user/4",
+					"raw": "{{host}}/api/admin/admin-user/6",
 					"host": [
 						"{{host}}"
 					],
@@ -337,7 +1533,7 @@
 						"api",
 						"admin",
 						"admin-user",
-						"4"
+						"6"
 					]
 				},
 				"description": ""
@@ -369,6 +1565,357 @@
 						"admin",
 						"admin-user",
 						"3"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"company_name\": \"company2\",\n\t\"name\": \"company 2\",\n\t\"company_address\": \"test\",\n\t\"contact_number\": \"11111111\",\n\t\"country_id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/admin/company",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update company",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n\t\"company_name\": \"company4\",\n\t\"name\": \"company 4\",\n\t\"company_address\": \"test\",\n\t\"contact_number\": \"11111111\",\n\t\"country_id\": 1\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/admin/company/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update distribution center",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n\t\"country_id\": 2,\n\t\"company_id\": 1,\n\t\"address\": \"test 2\",\n\t\"contact_number\": \"1111111111\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/admin/distribution-center/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"distribution-center",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create company",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"company_name\": \"company2\",\n\t\"name\": \"company 2\",\n\t\"company_address\": \"test\",\n\t\"contact_number\": \"11111111\",\n\t\"country_id\": 2\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/admin/company",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create distribution center",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"country_id\": 1,\n\t\"company_id\": 1,\n\t\"address\": \"test6666\",\n\t\"contact_number\": \"1111111111\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/admin/distribution-center",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"distribution-center"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete company",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/company/2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company",
+						"2"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete distribution  center",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/distribution-center/2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"distribution-center",
+						"2"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all company",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/company",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all distribution-center",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/distribution-center",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"distribution-center"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get company by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/company/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"company",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get distribution-center by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/api/admin/distribution-center/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"distribution-center",
+						"1"
 					]
 				},
 				"description": ""
