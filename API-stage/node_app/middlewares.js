@@ -117,9 +117,7 @@ console.log('user!!!', data)
 
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
-                model: db.Role,
-                foreignKey:'role_id',
-                as: 'role'
+                model: db.Role
             }]})
             .then((adminUser) => {
             if (!adminUser) return next(new Errors.Validation("User not exist"));
@@ -147,7 +145,7 @@ console.log('user!!!', data)
 
         if(req.body['country_id'] || req.params['country_id']) {
             const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
-            db.AdminuserCountry.findOne({where: {adminuser_id: adminUser.id, country_id: country_id}}).then((exist)=>{
+            db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
                 if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
             req.user = adminUser;
             next();
@@ -167,9 +165,7 @@ console.log('user!!!', data)
         if(data.valid !== 1) return next(new Errors.Validation("No user token"));
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
-                model: db.Role,
-                foreignKey:'role_id',
-                as: 'role'
+                model: db.Role
             }]})
             .then((adminUser) => {
             if (!adminUser) return next(new Errors.Validation("User not exist"));
@@ -193,7 +189,7 @@ console.log('user!!!', data)
 
                 if(req.body['country_id'] || req.params['country_id']) {
                     const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
-                    db.AdminuserCountry.findOne({where: {adminuser_id: adminUser.id, country_id: country_id}}).then((exist)=>{
+                    db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
                         if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
                     req.user = adminUser;
                     next();

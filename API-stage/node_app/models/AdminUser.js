@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
         password: DataTypes.STRING,
         company_id: DataTypes.INTEGER(11),
         role_id: DataTypes.INTEGER(11),
+        phone_number: DataTypes.STRING,
         number_password_attempt:{
             type: DataTypes.INTEGER(1),
             defaultValue: 0

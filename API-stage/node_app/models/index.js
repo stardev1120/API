@@ -27,7 +27,6 @@ let db = {};
 const { name, user, pass, host, port } = config.db;
 
 const sequelize = new Sequelize(name, user, pass, { host, port, dialect: 'mysql'});
-
 fs.readdirSync(__dirname)
   .filter((file) => {
     return ((file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) === '.js'));
@@ -43,17 +42,17 @@ Object.keys(db).forEach((modelName) => {
   }
 });
 
-
 // describe relationships
 
 db['User'].belongsTo(db['Country']);
-db['Country'].hasMany(db['User']);
+db['Country'].hasMany(db['User'], {as: "users"});
 
 db['CountrySetting'].belongsTo(db['Country']);
-db['Country'].hasMany(db['CountrySetting']);
+db['Country'].hasMany(db['CountrySetting'], {as: "countrySettings"});
 
 db['CountryInvestment'].belongsTo(db['Country']);
 db['Country'].hasMany(db['CountryInvestment']);
+
 db['CountryInvestment'].belongsTo(db['Loan']);
 db['Loan'].hasMany(db['CountryInvestment']);
 
@@ -77,27 +76,24 @@ db['CreditScoreHistory'].belongsTo(db['User']);
 db['User'].hasMany(db['CreditScoreHistory']);
 
 db['Loan'].belongsTo(db['User']);
-db['User'].hasMany(db['Loan']);
+db['User'].hasMany(db['Loan'], {as: "loans"});
+
 db['Loan'].belongsTo(db['UserPaymentMethod']);
 db['UserPaymentMethod'].hasMany(db['Loan']);
 
 db['LoansHistory'].belongsTo(db['User']);
 db['User'].hasMany(db['LoansHistory']);
 
-db['Collection'].belongsTo(db['Loan']);
-db['Loan'].hasMany(db['Collection']);
-
 db['CollectionHistory'].belongsTo(db['Loan']);
 db['Loan'].hasMany(db['CollectionHistory']);
 
-db['Company'].belongsTo(db['Country'], {foreignKey: "country_id", as: "country"});
+db['Company'].belongsTo(db['Country']);
 db['Country'].hasMany(db['Company']);
 
-
-db['AdminUser'].belongsTo(db['Company'], {foreignKey: "company_id", as: "company"});
+db['AdminUser'].belongsTo(db['Company']);
 db['Company'].hasMany(db['AdminUser']);
 
-db['AdminUser'].belongsTo(db['Role'], {foreignKey: "role_id", as: "role"});
+db['AdminUser'].belongsTo(db['Role']);
 db['Role'].hasMany(db['AdminUser']);
 
 db['AdminuserCountry'].belongsTo(db['AdminUser']);
@@ -106,10 +102,10 @@ db['AdminUser'].hasMany(db['AdminuserCountry']);
 db['AdminuserCountry'].belongsTo(db['Country']);
 db['Country'].hasMany(db['AdminuserCountry']);
 
-db['DistributionCenter'].belongsTo(db['Country'], {foreignKey: "country_id", as: "country"});
+db['DistributionCenter'].belongsTo(db['Country']);
 db['Country'].hasMany(db['DistributionCenter']);
 
-db['DistributionCenter'].belongsTo(db['Company'], {foreignKey: "company_id", as: "company"});
+db['DistributionCenter'].belongsTo(db['Company']);
 db['Company'].hasMany(db['DistributionCenter']);
 
 db['FeatureACL'].belongsTo(db['Role']);
@@ -117,6 +113,15 @@ db['Role'].hasMany(db['FeatureACL']);
 
 db['UserActivityLog'].belongsTo(db['AdminUser']);
 db['AdminUser'].hasMany(db['UserActivityLog']);
+
+db['AdminCollectDistribute'].belongsTo(db['Loan']);
+db['Loan'].hasMany(db['AdminCollectDistribute'], {as: "adminCollectDistributes"});
+
+db['ViewProfileOTP'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['ViewProfileOTP']);
+
+db['ViewProfileOTP'].belongsTo(db['User']);
+db['User'].hasMany(db['ViewProfileOTP']);
 
 module.exports = lodash.extend({
   sequelize: sequelize,

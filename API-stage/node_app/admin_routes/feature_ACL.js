@@ -26,9 +26,7 @@ db.FeatureACL.create(query)
 router.get('/', middlewares.validateAdminUser, (req, res, next) => {
     db.FeatureACL.findAll({where: {},
     include: [{
-        model: db.Role,
-        foreignKey:'role_id',
-        as: 'role'
+        model: db.Role
     }]})
     .then((companies) => {
     res.send(companies)
@@ -39,9 +37,7 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
     db.FeatureACL.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Role,
-        foreignKey:'role_id',
-        as: 'role'
+        model: db.Role
     }]})
     .then((featureACL) => {
     res.send(featureACL)

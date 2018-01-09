@@ -26,9 +26,7 @@ db.Company.create(query)
 router.get('/', middlewares.validateAdminUser, (req, res, next) => {
     db.Company.findAll({where: {},
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Country
     }]})
     .then((companies) => {
     res.send(companies)
@@ -39,9 +37,7 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
     db.Company.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Country
     }]})
     .then((company) => {
     res.send(company)

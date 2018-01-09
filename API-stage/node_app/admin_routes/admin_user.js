@@ -109,7 +109,7 @@ router.post('/', middlewares.validateAdminUser , (req, res, next) => {
         .then(adminUser => {
 
  var actions= countries.map((country) => {
-     return db.AdminuserCountry.create({adminuser_id: adminUser.id, country_id: country})
+     return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
     })
 var results = Promise.all(actions);
 results.then(data =>
@@ -124,9 +124,7 @@ results.then(data =>
  router.get('/', middlewares.validateAdminUser, (req, res, next) => {
  db.AdminUser.findAll({where: {},
      include: [{
-         model: db.Role,
-         foreignKey:'role_id',
-         as: 'role'
+         model: db.Role
      }]})
  .then((adminUsers) => {
  res.send(adminUsers)
@@ -137,9 +135,7 @@ results.then(data =>
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
     db.AdminUser.findOne({where: {id: req.params['id']} ,
     include: [{
-    model: db.Role,
-    foreignKey:'role_id',
-    as: 'role'
+    model: db.Role
 }]})
     .then((adminUser) => {
     res.send(adminUser)
@@ -162,12 +158,12 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
         adminUser.save()
             .then(() => {
             db.AdminuserCountry.destroy({
-            where: {adminuser_id: adminUser.id},
+            where: {adminuser_id: admin_user.id},
             truncate: true
         }).then(()=>{
             if(countries && countries.length > 0){
     var actions= countries.map((country) => {
-            return db.AdminuserCountry.create({adminuser_id: adminUser.id, country_id: country})
+            return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
         })
     var results = Promise.all(actions);
     results.then(data =>

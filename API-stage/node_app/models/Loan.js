@@ -3,7 +3,7 @@
 module.exports = function(sequelize, DataTypes) {
   const Loan = sequelize.define('Loan', {
     date_taken : DataTypes.DATE,
-    ammount_taken: DataTypes.DOUBLE,
+    amount_taken: DataTypes.DOUBLE,
     service_fee: DataTypes.STRING,
     interest_rate: DataTypes.STRING,
     duration_of_loan : DataTypes.INTEGER,

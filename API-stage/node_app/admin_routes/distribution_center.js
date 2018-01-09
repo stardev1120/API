@@ -26,13 +26,9 @@ db.DistributionCenter.create(query)
 router.get('/', middlewares.validateAdminUser, (req, res, next) => {
     db.DistributionCenter.findAll({where: {},
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Country
     },{
-        model: db.Company,
-        foreignKey:'company_id',
-        as: 'company'
+        model: db.Company
     }]})
     .then((companies) => {
     res.send(companies)
@@ -43,13 +39,9 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
     db.DistributionCenter.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Country,
-        foreignKey:'country_id',
-        as: 'country'
+        model: db.Country
     },{
-        model: db.Company,
-        foreignKey:'company_id',
-        as: 'companys'
+        model: db.Company
     }]})
     .then((distributionCenter) => {
     res.send(distributionCenter)

@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     value:{
       type: DataTypes.TEXT
-    }
+    },
+      country_id: DataTypes.INTEGER
   },{
     underscored: true
   });
