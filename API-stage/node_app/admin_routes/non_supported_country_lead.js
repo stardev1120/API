@@ -24,7 +24,7 @@ db.NonSupportedCountryLead.create(query)
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {offset, limit}=req.query;
-    db.NonSupportedCountryLead.findAll({offset: offset, limit: limit, where: {}})
+    db.NonSupportedCountryLead.findAll({offset: offset*1, limit: limit*1, where: {}})
     .then((countries) => {
     res.send(countries)
 })

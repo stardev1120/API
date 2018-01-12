@@ -30,7 +30,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"test\",\n\t\"email\": \"test\",\n\t\"phone_number\": \"11111111\"\n}"
+							"raw": "{\n\t\"query\": {\n\t\"name\": \"test\",\n\t\"email\": \"test\",\n\t\"phone_number\": \"11111111\"\n\t},\n\t\"cursor\":{\n\t\t\"offset\":0,\n\t\t\"limit\":100\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{host}}/api/admin/user/search",
@@ -216,7 +216,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/country",
+							"raw": "{{host}}/api/admin/country?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -224,6 +224,18 @@
 								"api",
 								"admin",
 								"country"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -395,7 +407,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/country-setting",
+							"raw": "{{host}}/api/admin/country-setting?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -403,6 +415,18 @@
 								"api",
 								"admin",
 								"country-setting"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -574,7 +598,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/non-supported-country-lead",
+							"raw": "{{host}}/api/admin/non-supported-country-lead?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -582,6 +606,18 @@
 								"api",
 								"admin",
 								"non-supported-country-lead"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -753,7 +789,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/country-investment",
+							"raw": "{{host}}/api/admin/country-investment?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -761,6 +797,18 @@
 								"api",
 								"admin",
 								"country-investment"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -822,7 +870,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/loan",
+							"raw": "{{host}}/api/admin/loan?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -830,6 +878,18 @@
 								"api",
 								"admin",
 								"loan"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -1038,7 +1098,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/api/admin/collection",
+							"raw": "{{host}}/api/admin/collection?offset=0&limit=100",
 							"host": [
 								"{{host}}"
 							],
@@ -1046,6 +1106,18 @@
 								"api",
 								"admin",
 								"collection"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
 							]
 						},
 						"description": ""
@@ -1126,7 +1198,7 @@
 					"response": []
 				},
 				{
-					"name": "request view-profile-otp",
+					"name": "request admin-user-access",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1148,14 +1220,14 @@
 							"raw": "{\n\t\"user_id\": 1\n}"
 						},
 						"url": {
-							"raw": "{{host}}/api/admin/view-profile-otp",
+							"raw": "{{host}}/api/admin/admin-user-access",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"admin",
-								"view-profile-otp"
+								"admin-user-access"
 							]
 						},
 						"description": ""
@@ -1163,7 +1235,7 @@
 					"response": []
 				},
 				{
-					"name": "user response view-profile-otp",
+					"name": "user response admin-user-access",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -1182,18 +1254,208 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"approval\": false\n}"
+							"raw": "{\n\t\"otp\": \"980335\",\n\t\"user_id\":1\n}"
 						},
 						"url": {
-							"raw": "{{host}}/api/admin/view-profile-otp/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJhZG1pbl91c2VyX2lkIjoyLCJpYXQiOjE1MTU1MTU5NDgsImV4cCI6MTUxNTUyMzE0OH0.ZruHjX4ZPiCgpskrCQyP8eea8eF0O-rmdP2XS5dCftU",
+							"raw": "{{host}}/api/admin/admin-user-access",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"api",
 								"admin",
-								"view-profile-otp",
-								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJhZG1pbl91c2VyX2lkIjoyLCJpYXQiOjE1MTU1MTU5NDgsImV4cCI6MTUxNTUyMzE0OH0.ZruHjX4ZPiCgpskrCQyP8eea8eF0O-rmdP2XS5dCftU"
+								"admin-user-access"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create admin-collect-distribute",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionType\":\"tranfer\",\n\t\"amount\":1000,\n\t\"admin_user_id\":1,\n\t\"loan_id\":3\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/admin-collect-distribute",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"admin-collect-distribute"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get all admin-collect-distribute",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/admin-collect-distribute?offset=0&limit=100",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"admin-collect-distribute"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"equals": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get admin-collect-distribute by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/admin-collect-distribute/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"admin-collect-distribute",
+								"5"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update admin-collect-distribute",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 6,\n    \"transactionType\": \"tranferss\",\n    \"amount\": 13300,\n    \"admin_user_id\": 2,\n    \"loan_id\": 3\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/admin-collect-distribute/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"admin-collect-distribute",
+								"6"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete admin-collect-distribute",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/api/admin/admin-collect-distribute/6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"admin-collect-distribute",
+								"6"
 							]
 						},
 						"description": ""
@@ -1489,7 +1751,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"test3\",\n    \"email\": \"test3@test.com\",\n    \"password\": \"33333\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 1,\n    \"max_session_time\": \"2h\",\n    \"FAfield\": \"ssss33ss\",\n    \"countries\": [\n    \t1,\n    \t2\n    \t]\n}"
+					"raw": "{\n   \"name\": \"test9\",\n    \"email\": \"test0@test.com\",\n    \"password\": \"33333\",\n    \"company_id\": 1,\n    \"role_id\": 1,\n    \"number_password_attempt\": 1,\n    \"max_session_time\": \"2h\",\n    \"FAfield\": \"ssss33ss\",\n    \"countries\": [\n    \t1,\n    \t2\n    \t]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/api/admin/admin-user",
@@ -1556,7 +1818,7 @@
 				],
 				"body": {},
 				"url": {
-					"raw": "{{host}}/api/admin/admin-user/3",
+					"raw": "{{host}}/api/admin/admin-user/14",
 					"host": [
 						"{{host}}"
 					],
@@ -1564,7 +1826,7 @@
 						"api",
 						"admin",
 						"admin-user",
-						"3"
+						"14"
 					]
 				},
 				"description": ""
@@ -1812,11 +2074,15 @@
 					{
 						"key": "authorization",
 						"value": "JWT {{jwt_token}}"
+					},
+					{
+						"key": "country_id",
+						"value": "1"
 					}
 				],
 				"body": {},
 				"url": {
-					"raw": "{{host}}/api/admin/company",
+					"raw": "{{host}}/api/admin/company?offset=0&limit=1000",
 					"host": [
 						"{{host}}"
 					],
@@ -1824,6 +2090,18 @@
 						"api",
 						"admin",
 						"company"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true
+						},
+						{
+							"key": "limit",
+							"value": "1000",
+							"equals": true
+						}
 					]
 				},
 				"description": ""
@@ -1842,11 +2120,15 @@
 					{
 						"key": "authorization",
 						"value": "JWT {{jwt_token}}"
+					},
+					{
+						"key": "country_id",
+						"value": "1"
 					}
 				],
 				"body": {},
 				"url": {
-					"raw": "{{host}}/api/admin/distribution-center",
+					"raw": "{{host}}/api/admin/distribution-center?offset=0&limit=100",
 					"host": [
 						"{{host}}"
 					],
@@ -1854,6 +2136,18 @@
 						"api",
 						"admin",
 						"distribution-center"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"equals": true
+						}
 					]
 				},
 				"description": ""

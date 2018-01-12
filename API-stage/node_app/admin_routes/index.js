@@ -36,5 +36,5 @@ router.use('/country-investment', require('./country_investment'));
 router.use('/loan', require('./loan'));
 router.use('/collection', require('./collection'));
 router.use('/admin-collect-distribute', require('./admin_collect_distribute'));
-router.use('/view-profile-otp', require('./admin_user_access'));
+router.use('/admin-user-access', require('./admin_user_access'));
 module.exports = router;

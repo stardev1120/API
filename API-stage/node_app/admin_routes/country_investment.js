@@ -25,11 +25,11 @@ db.CountryInvestment.create(query)
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
    const {country_id} = req.headers;
     const {offset, limit}=req.query;
-   db.CountryInvestment.findAll({offset: offset, limit: limit, where: {},
+   db.CountryInvestment.findAll({offset: offset*1, limit: limit*1, where: {},
 include:[
     {
         model: db.Country,
-        where: {country_id: country_id}
+        where: {id: country_id}
     },
 
     {
@@ -50,7 +50,7 @@ router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLA
     include:[
         {
             model: db.Country,
-            where: {country_id: country_id}
+            where: {id: country_id}
         },
 
         {

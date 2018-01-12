@@ -24,7 +24,7 @@ db.AdminCollectDistribute.create(query)
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {offset, limit}=req.query;
-db.AdminCollectDistribute.findAll({offset: offset, limit: limit, where: {}})
+db.AdminCollectDistribute.findAll({offset: offset*1, limit: limit*1, where: {}})
     .then((adminCollectDistributes) => {
     res.send(adminCollectDistributes)
 })

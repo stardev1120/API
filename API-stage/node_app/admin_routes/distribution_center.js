@@ -26,10 +26,10 @@ db.DistributionCenter.create(query)
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id} = req.headers;
 const {offset, limit}=req.query;
-db.DistributionCenter.findAll({offset: offset, limit: limit, where: {},
+db.DistributionCenter.findAll({offset: offset*1, limit: limit*1, where: {},
     include: [{
         model: db.Country,
-        where: {country_id: country_id}
+        where: {id: country_id*1}
     },{
         model: db.Company
     }]})
@@ -44,7 +44,7 @@ router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLA
     db.DistributionCenter.findOne({where: {id: req.params['id']} ,
     include: [{
         model: db.Country,
-        where: {country_id: country_id}
+        where: {id: country_id}
     },{
         model: db.Company
     }]})

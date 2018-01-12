@@ -204,11 +204,11 @@ console.log('user!!!', data)
             const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
             db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
                 if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
-                 next();
+                 return next();
             })
             .catch(next);
         }
-             next();
+             return next();
     },
     checkAdminUserActionAuth: function(req, res, next){
         const adminUser = req.user;
@@ -227,6 +227,23 @@ console.log('user!!!', data)
         if(adminUser.Role.FeatureACLs[0].fields){
             req.fields = JSON.parse(adminUser.Role.FeatureACLs[0].fields)
         }*/
-        next();
+        return next();
+    },
+    checkAdminUserAccess: function(req, res, next) {
+        const adminUser = req.user;
+        const userId = req.params['id'];
+
+        if(adminUser.Role.FeatureACLs[0]&&adminUser.Role.FeatureACLs[0].fields&&
+            adminUser.Role.FeatureACLs[0].fields['ALL']){
+            return next()
+        }
+
+        db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
+            .then((right)=> {
+            if(!right)  return next(new Errors.Validation("you didn't a supper admin or didn't have valid OTP"));
+
+            return next()
+        })
+        .catch(next);
     }
 }

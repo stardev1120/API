@@ -16,7 +16,7 @@ const Op = Sequelize.Op;
 router.post('/search', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id}= req.headers;
     const{query:{name, email, phone_number}, cursor:{offset, limit}}=req.body
-    db.User.findAll({offset: offset, limit: limit, where:{
+    db.User.findAll({offset: offset*1, limit: limit*1, where:{
             fname : { [Op.like]: '%' + name + '%'},
             mname : { [Op.like]: '%' + name + '%'},
             lname : { [Op.like]: '%' + name + '%'},
@@ -30,11 +30,13 @@ router.post('/search', middlewares.validateAdminUser, middlewares.checkAdminUser
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth,
+    middlewares.checkAdminUserAccess, (req, res, next) => {
     const {country_id}= req.headers;
-    
+
     var include = [];
-    if(req.user.Role.FeatureAcls[0]&&req.user.Role.FeatureAcls[0].fields&&req.user.Role.FeatureAcls[0].fields['LOAN']){
+    if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields&&
+        (req.user.Role.FeatureACLs[0].fields['LOAN'] || req.user.Role.FeatureACLs[0].fields['ALL'])){
         include.push({
             model: db.Loan,
             include:[

@@ -38,28 +38,35 @@ db.Loan.create(query)
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id}=req.headers;
     const {user_id, offset, limit}=req.query;
-    var filter = {
-        country_id: country_id
+    var filterCountry = {
     }
+    if(country_id){
+        filterCountry.id = country_id
+    }
+    var filter={}
     if(user_id){
         filter.user_id = user_id
     }
 var include = [
     {
         model: db.User,
-        where: filter
+        where: filter,
+        include: [{
+            model:db.Country,
+            where:filterCountry
+        }]
     },
 
     {
         model: db.UserPaymentMethod
     },
     ];
-if(req.user.Role.FeatureAcls[0]&&req.user.Role.FeatureAcls[0].fields&&req.user.Role.FeatureAcls[0].fields['COLLECTION']){
+if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields&&req.user.Role.FeatureACLs[0].fields['COLLECTION']){
     include.push({
         model: db.Collection
     })
 }
-    db.Loan.findAll({offset: offset, limit: limit, where: {},
+    db.Loan.findAll({offset: offset*1, limit: limit*1, where: {},
     include:include
     })
     .then((loans) => {
@@ -70,23 +77,28 @@ if(req.user.Role.FeatureAcls[0]&&req.user.Role.FeatureAcls[0].fields&&req.user.R
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id}=req.headers;
+var include = [
+    {
+        model: db.User,
+        include: [{
+            model:db.Country,
+            where: {id: country_id}
+        }]
+    },
+
+    {
+        model: db.UserPaymentMethod
+    },
+];
+if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields&&req.user.Role.FeatureACLs[0].fields['COLLECTION']){
+    include.push({
+        model: db.Collection
+    })
+}
     db.Loan.findOne({where: {
     id: req.params['id']
 },
-    include:[
-        {
-            model: db.User,
-            where: {country_id: country_id}
-        },
-
-        {
-            model: db.UserPaymentMethod
-        },
-        {
-            model: db.Collection,
-            as: 'collections'
-        }
-    ]})
+    include:include})
     .then((loan) => {
     res.send(loan)
 })

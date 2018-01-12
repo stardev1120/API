@@ -29,7 +29,7 @@ db.Collection.create(query)
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {offset, limit}=req.query;
-    db.Collection.findAll({offset: offset, limit: limit,where: {},
+    db.Collection.findAll({offset: offset*1, limit: limit*1,where: {},
     include:[
         {
             model: db.Loan
