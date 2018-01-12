@@ -35,5 +35,6 @@ router.use('/non-supported-country-lead', require('./non_supported_country_lead'
 router.use('/country-investment', require('./country_investment'));
 router.use('/loan', require('./loan'));
 router.use('/collection', require('./collection'));
-router.use('/view-profile-otp', require('./view_profile_OTP'));
+router.use('/admin-collect-distribute', require('./admin_collect_distribute'));
+router.use('/view-profile-otp', require('./admin_user_access'));
 module.exports = router;

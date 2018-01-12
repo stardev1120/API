@@ -92,7 +92,7 @@ router.get('/md5/:password', function (req, res) {
     res.send(md5(req.params['password']));
 });
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {name, email, password, company_id, role_id, max_session_time, FAfield, countries} = req.body;
 
     let query = {
@@ -112,17 +112,18 @@ router.post('/', middlewares.validateAdminUser , (req, res, next) => {
      return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
     })
 var results = Promise.all(actions);
-results.then(data =>
+return results.then(data =>
 {
-    res.send(adminUser.id);
+    res.send({"message": "done"});
 });
 
         })
         .catch(err => res.send({err: err.message}))
  })
 
- router.get('/', middlewares.validateAdminUser, (req, res, next) => {
- db.AdminUser.findAll({where: {},
+ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+     const {offset, limit}=req.query;
+     db.AdminUser.findAll({offset: offset, limit: limit, where: {},
      include: [{
          model: db.Role
      }]})
@@ -181,7 +182,7 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
  });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
      db.AdminUser.destroy({where: {id: req.params['id']}})
         .then(() => res.send(true))
         .catch(err => next(err));

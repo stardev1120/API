@@ -10,7 +10,7 @@ const router = require('express').Router();
 const dictionary = require('../dictionary.json');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {name, country_code, status} = req.body;
 
 let query = {name: name, country_code: country_code, status: status};
@@ -22,15 +22,16 @@ db.Country.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.Country.findAll({where: {}})
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {offset, limit}=req.query;
+    db.Country.findAll({offset: offset, limit: limit, where: {}})
     .then((countries) => {
     res.send(countries)
 })
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Country.findOne({where: {
         id: req.params['id']
     },
@@ -46,7 +47,7 @@ include:[
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {name, country_code, status} = req.body;
 db.Country.findOne({where: {id: req.params['id']}})
     .then((country) => {
@@ -61,7 +62,7 @@ country.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Country.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

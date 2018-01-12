@@ -13,10 +13,10 @@ const Sequelize = require('sequelize')
 
 const Op = Sequelize.Op;
 
-router.post('/search', middlewares.validateAdminUser, (req, res, next) => {
+router.post('/search', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id}= req.headers;
-    const{name, email, phone_number}=req.body
-    db.User.findAll({where:{
+    const{query:{name, email, phone_number}, cursor:{offset, limit}}=req.body
+    db.User.findAll({offset: offset, limit: limit, where:{
             fname : { [Op.like]: '%' + name + '%'},
             mname : { [Op.like]: '%' + name + '%'},
             lname : { [Op.like]: '%' + name + '%'},
@@ -30,24 +30,26 @@ router.post('/search', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id}= req.headers;
+    
+    var include = [];
+    if(req.user.Role.FeatureAcls[0]&&req.user.Role.FeatureAcls[0].fields&&req.user.Role.FeatureAcls[0].fields['LOAN']){
+        include.push({
+            model: db.Loan,
+            include:[
+                {
+                    model: db.Collection
+                }
+            ]
+        })
+    }
     db.User.findOne({where: {
         id: req.params['id'],
         country_id: country_id
     },
-    include:[
-        {
-            model: db.Loan,
-            as: 'loans',
-            include:[
-                {
-                    model: db.Collection,
-                    as: 'collections'
-                }
-            ]
-        }
-    ]})
+    include:include
+    })
     .then((user) => {
     res.send(user)
 })

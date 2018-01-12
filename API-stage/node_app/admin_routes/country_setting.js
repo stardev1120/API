@@ -10,7 +10,7 @@ const router = require('express').Router();
 const dictionary = require('../dictionary.json');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {name, value, country_id} = req.body;
 
 let query = {name: name, value: value, country_id: country_id};
@@ -22,11 +22,14 @@ db.CountrySetting.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.CountrySetting.findAll({where: {},
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id} = req.headers;
+const {offset, limit}=req.query;
+db.CountrySetting.findAll({offset: offset, limit: limit, where: {},
 include:[
     {
-        model: db.Country
+        model: db.Country,
+        where: {country_id: country_id}
     }
 ]})
     .then((countrySettings) => {
@@ -35,13 +38,15 @@ include:[
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id} = req.headers;
     db.CountrySetting.findOne({where: {
     id: req.params['id']
 },
     include:[
         {
-            model: db.Country
+            model: db.Country,
+            where: {country_id: country_id}
         }
     ]})
     .then((countrySetting) => {
@@ -50,7 +55,7 @@ router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {name, value, country_id} = req.body;
 db.CountrySetting.findOne({where: {id: req.params['id']}})
     .then((countrySetting) => {
@@ -65,7 +70,7 @@ countrySetting.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.CountrySetting.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

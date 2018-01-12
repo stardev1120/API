@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-    const ViewProfileOTP = sequelize.define('ViewProfileOTP', {
-        token: DataTypes.STRING,
-        availability: DataTypes.DATE,
+    const AdminUserAccess = sequelize.define('AdminUserAccess', {
+        otp: DataTypes.STRING,
+        date: DataTypes.DATE,
         using_period: DataTypes.INTEGER,
         status: DataTypes.STRING
     },{
         underscored: true
     });
-    return ViewProfileOTP;
+    return AdminUserAccess;
 };

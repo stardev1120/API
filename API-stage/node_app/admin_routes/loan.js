@@ -10,7 +10,7 @@ const router = require('express').Router();
 const dictionary = require('../dictionary.json');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {date_taken, amount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
         bank_credit_transaction, bank_credit_status, currency, user_id, user_payment_method_id} = req.body;
 
@@ -35,34 +35,48 @@ db.Loan.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.Loan.findAll({where: {},
-    include:[
-        {
-            model: db.User
-        },
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id}=req.headers;
+    const {user_id, offset, limit}=req.query;
+    var filter = {
+        country_id: country_id
+    }
+    if(user_id){
+        filter.user_id = user_id
+    }
+var include = [
+    {
+        model: db.User,
+        where: filter
+    },
 
-        {
-            model: db.UserPaymentMethod
-        },
-        {
-            model: db.Collection,
-            as: 'collections'
-        }
-    ]})
+    {
+        model: db.UserPaymentMethod
+    },
+    ];
+if(req.user.Role.FeatureAcls[0]&&req.user.Role.FeatureAcls[0].fields&&req.user.Role.FeatureAcls[0].fields['COLLECTION']){
+    include.push({
+        model: db.Collection
+    })
+}
+    db.Loan.findAll({offset: offset, limit: limit, where: {},
+    include:include
+    })
     .then((loans) => {
     res.send(loans)
 })
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id}=req.headers;
     db.Loan.findOne({where: {
     id: req.params['id']
 },
     include:[
         {
-            model: db.User
+            model: db.User,
+            where: {country_id: country_id}
         },
 
         {
@@ -79,7 +93,7 @@ router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {date_taken, amount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
         bank_credit_transaction, bank_credit_status, currency, user_id, user_payment_method_id} = req.body;
 
@@ -106,7 +120,7 @@ loan.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Loan.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

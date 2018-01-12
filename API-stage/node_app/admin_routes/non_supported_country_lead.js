@@ -10,7 +10,7 @@ const router = require('express').Router();
 const dictionary = require('../dictionary.json');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {country, ip_address, gps_location, email} = req.body;
 
 let query = {country: country, ip_address: ip_address, gps_location: gps_location, email: email};
@@ -22,15 +22,16 @@ db.NonSupportedCountryLead.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.NonSupportedCountryLead.findAll({where: {}})
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {offset, limit}=req.query;
+    db.NonSupportedCountryLead.findAll({offset: offset, limit: limit, where: {}})
     .then((countries) => {
     res.send(countries)
 })
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.NonSupportedCountryLead.findOne({where: {
     id: req.params['id']
 }})
@@ -40,7 +41,7 @@ router.get('/:id', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country, ip_address, gps_location, email} = req.body;
 db.NonSupportedCountryLead.findOne({where: {id: req.params['id']}})
     .then((countryLead) => {
@@ -56,7 +57,7 @@ countryLead.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.NonSupportedCountryLead.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

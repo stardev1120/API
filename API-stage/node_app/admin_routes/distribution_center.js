@@ -11,7 +11,7 @@ const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {country_id, company_id, address, lat, long, contact_number} = req.body;
 
 let query = {country_id: country_id, company_id: company_id, address: address, lat: lat, long: long, contact_number: contact_number};
@@ -23,10 +23,13 @@ db.DistributionCenter.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.DistributionCenter.findAll({where: {},
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id} = req.headers;
+const {offset, limit}=req.query;
+db.DistributionCenter.findAll({offset: offset, limit: limit, where: {},
     include: [{
-        model: db.Country
+        model: db.Country,
+        where: {country_id: country_id}
     },{
         model: db.Company
     }]})
@@ -36,10 +39,12 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id} = req.headers;
     db.DistributionCenter.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Country
+        model: db.Country,
+        where: {country_id: country_id}
     },{
         model: db.Company
     }]})
@@ -49,7 +54,7 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id, company_id, address, lat, long, contact_number} = req.body;
 db.DistributionCenter.findOne({where: {id: req.params['id']}})
     .then((distributionCenter) => {
@@ -67,7 +72,7 @@ distributionCenter.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.DistributionCenter.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

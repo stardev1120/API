@@ -11,7 +11,7 @@ const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {company_name, name, company_address, contact_number, country_id} = req.body;
 
 let query = {company_name: company_name, name: name, company_address: company_address, contact_number: contact_number, country_id: country_id};
@@ -23,10 +23,13 @@ db.Company.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.Company.findAll({where: {},
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+   const {country_id} = req.headers;
+    const {offset, limit}=req.query;
+    db.Company.findAll({offset: offset, limit: limit, where: {},
     include: [{
-        model: db.Country
+        model: db.Country,
+        where: {country_id: country_id}
     }]})
     .then((companies) => {
     res.send(companies)
@@ -34,10 +37,12 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {country_id} = req.headers;
     db.Company.findOne({where: {id: req.params['id']} ,
     include: [{
-        model: db.Country
+        model: db.Country,
+        where: {country_id: country_id}
     }]})
     .then((company) => {
     res.send(company)
@@ -45,7 +50,7 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {company_name, name, company_address, contact_number, country_id} = req.body;
 db.Company.findOne({where: {id: req.params['id']}})
     .then((company) => {
@@ -62,7 +67,7 @@ company.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Company.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

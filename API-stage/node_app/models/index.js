@@ -48,7 +48,7 @@ db['User'].belongsTo(db['Country']);
 db['Country'].hasMany(db['User'], {as: "users"});
 
 db['CountrySetting'].belongsTo(db['Country']);
-db['Country'].hasMany(db['CountrySetting'], {as: "countrySettings"});
+db['Country'].hasMany(db['CountrySetting']);
 
 db['CountryInvestment'].belongsTo(db['Country']);
 db['Country'].hasMany(db['CountryInvestment']);
@@ -115,13 +115,16 @@ db['UserActivityLog'].belongsTo(db['AdminUser']);
 db['AdminUser'].hasMany(db['UserActivityLog']);
 
 db['AdminCollectDistribute'].belongsTo(db['Loan']);
-db['Loan'].hasMany(db['AdminCollectDistribute'], {as: "adminCollectDistributes"});
+db['Loan'].hasMany(db['AdminCollectDistribute']);
 
-db['ViewProfileOTP'].belongsTo(db['AdminUser']);
-db['AdminUser'].hasMany(db['ViewProfileOTP']);
+db['AdminCollectDistribute'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['AdminCollectDistribute']);
 
-db['ViewProfileOTP'].belongsTo(db['User']);
-db['User'].hasMany(db['ViewProfileOTP']);
+db['AdminUserAccess'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['AdminUserAccess']);
+
+db['AdminUserAccess'].belongsTo(db['User']);
+db['User'].hasMany(db['AdminUserAccess']);
 
 module.exports = lodash.extend({
   sequelize: sequelize,

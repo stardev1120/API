@@ -11,7 +11,7 @@ const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
 
 
-router.post('/', middlewares.validateAdminUser , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {admin_user_id, country_id} = req.body;
 
 let query = {admin_user_id: admin_user_id, country_id: country_id};
@@ -23,8 +23,9 @@ db.AdminuserCountry.create(query)
 .catch(err => res.send({err: err.message}))
 })
 
-router.get('/', middlewares.validateAdminUser, (req, res, next) => {
-    db.AdminuserCountry.findAll({where: {},
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {offset, limit}=req.query;
+    db.AdminuserCountry.findAll({offset: offset, limit: limit,where: {},
     include: [{
         model: db.Country
     }]})
@@ -34,7 +35,7 @@ router.get('/', middlewares.validateAdminUser, (req, res, next) => {
 .catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.AdminuserCountry.findOne({where: {id: req.params['id']} ,
     include: [{
         model: db.Country
@@ -45,7 +46,7 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 .catch(err => next(err));
 });
 
-router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
+router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {admin_user_id, country_id} = req.body;
 db.AdminuserCountry.findOne({where: {id: req.params['id']}})
     .then((adminuserCountry) => {
@@ -59,7 +60,7 @@ adminuserCountry.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, (req, res, next) => {
+router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.AdminuserCountry.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
