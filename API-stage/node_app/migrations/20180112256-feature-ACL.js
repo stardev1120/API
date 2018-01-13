@@ -29,11 +29,12 @@ module.exports = {
                         role_id: 1,
                         feature_api_url: '/api/admin/loan',
                         actions:'{ "GET":true, "POST": true, "PUT": true, "DELETE": true }',
-                        fields:'{"COLLECTION": true}'
+                        fields:'{"ALL": true}'
                     },{
                         role_id: 1,
                         feature_api_url: '/api/admin/collection',
-                        actions:'{ "GET":true, "POST": true, "PUT": true, "DELETE": true }'
+                        actions:'{ "GET":true, "POST": true, "PUT": true, "DELETE": true }',
+                        fields:'{ "ALL": true }'
                     },{
                         role_id: 1,
                         feature_api_url: '/api/admin/admin-user-access',

@@ -2,11 +2,7 @@
 
 module.exports = {
     up: function (queryInterface, Sequelize) {
-        return queryInterface.bulkInsert('Roles', [{
-            id: 1,
-            role_id: 'admin',
-            role_name: 'Admin'
-        }]);
+        return queryInterface.sequelize.query("INSERT INTO Roles (id, role_id, role_name) VALUES(1, 'super admin', 'supper_admin') ON DUPLICATE KEY UPDATE role_name='supper admin', role_id='supper_admin'").then();
     },
 
     down: function (queryInterface, Sequelize) {

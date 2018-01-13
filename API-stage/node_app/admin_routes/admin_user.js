@@ -107,16 +107,20 @@ router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAut
 
     db.AdminUser.create(query)
         .then(adminUser => {
-
- var actions= countries.map((country) => {
-     return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
-    })
-var results = Promise.all(actions);
-return results.then(data =>
+        if(countries && countries.length > 0)
 {
+    var actions = countries.map((country) => {
+            return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
+        })
+    var results = Promise.all(actions);
+    return results.then(data =>
+        {
+            res.send({"message": "done"});
+}) ;
+}
+else {
     res.send({"message": "done"});
-});
-
+}
         })
         .catch(err => res.send({err: err.message}))
  })
