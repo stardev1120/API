@@ -1461,6 +1461,44 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "authorization",
+								"value": "JWT {{jwt_token}}"
+							},
+							{
+								"key": "country_id",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"fname\": \"test2\",\r\n        \"mname\": \"test2\",\r\n        \"lname\": \"test2\",\r\n        \"email\": \"test4@test.com\",\r\n        \"user_location\": null,\r\n        \"access_token\": null,\r\n        \"phone_number\": \"1112111111111\",\r\n        \"verified\": false,\r\n        \"accept\": null,\r\n        \"no_of_active_loans\": null,\r\n        \"status\": null,\r\n        \"sex\": null,\r\n        \"profilepic\": null,\r\n        \"relationship\": null,\r\n        \"available_amount\": null,\r\n        \"min_availalble_amount\": 0,\r\n        \"number_of_attempts\": 0,\r\n        \"last_attempts_time\": \"2018-01-06T13:11:51.000Z\",\r\n        \"umbrella_score\": 0,\r\n        \"fbId\": null,\r\n        \"smscode\": null,\r\n        \"uScore_status\": null,\r\n        \"id_proof_file\": null,\r\n        \"selfie_proof_file\": null,\r\n        \"address_proof_file\": null,\r\n        \"id_verification_status\": null,\r\n        \"address_verification_status\": null\r\n    }"
+						},
+						"url": {
+							"raw": "{{host}}/api/admin/user/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"user",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

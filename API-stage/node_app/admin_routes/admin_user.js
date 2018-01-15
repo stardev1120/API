@@ -21,7 +21,7 @@ router.post('/login', (req, res, next) => {
 
         adminUser.update({number_password_attempt: adminUser.number_password_attempt+1}).then();
 
-        res.send({token: auth.createJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)});
+        res.send({token: auth.createAdminJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)});
     })
     .catch(err => res.send({err: err.message}))
 });
@@ -30,7 +30,7 @@ router.post('/forget-password', (req, res, next) => {
     db.AdminUser.findOne({where: {email: req.body.email}})
     .then((adminUser) => {
     if (!adminUser) return next(new Errors.Validation("User not exist"));
-const token=auth.createJwt({id: adminUser.id});
+const token=auth.createAdminJwt({id: adminUser.id});
 const baselink='http://localhost:3000/reset/';// todo we need to change it to be configurable.
 const link = `${baselink}${token}`;
 
@@ -47,7 +47,7 @@ router.put('/reset/:token', (req, res, next) => {
 
     const token = req.params['token'];
     const new_password = req.body.password;
-    const data = auth.verifyJwt(token)
+    const data = auth.verifyAdminJwt(token)
 
     db.AdminUser.findOne({
         where: {id: data.id}
@@ -79,12 +79,12 @@ router.put('/change-password', middlewares.validateAdminUser, (req, res, next) =
 
 
 router.post('/logout', middlewares.validateAdminUser, function (req, res) {
-    res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:0}, 1)});
+    res.send({token: auth.createAdminJwtWithexpiresIn({id:req.user.id, valid:0}, 1)});
     //res.send("logout success!");
 });
 
 router.post('/renew-session', middlewares.validateAdminUser, function (req, res) {
-    res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:1}, req.user.max_session_time)});
+    res.send({token: auth.createAdminJwtWithexpiresIn({id:req.user.id, valid:1}, req.user.max_session_time)});
 });
 
 
