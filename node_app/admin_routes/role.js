@@ -11,7 +11,7 @@ const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
 
 
-router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
+router.post('/' , (req, res, next) => {
     const {role_id, role_name, max_session_time} = req.body;
 
 let query = {role_id: role_id, role_name: role_name, max_session_time: max_session_time};

@@ -111,7 +111,7 @@ console.log('user!!!', data)
   },
  validateAdminUser: function(req, res, next) {
         if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
-        const data = auth.verifyAdminJwt(req.headers.authorization.split(' ')[1])
+        const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
         if(data.valid !== 1) return next(new Errors.Validation("No user token"));
 
@@ -126,14 +126,16 @@ console.log('user!!!', data)
             .then((adminUser) => {
             if (!adminUser) return next(new Errors.Validation("User not exist"));
 
-        const{url, body, params, method, originalUrl,baseUrl}=req;
+        const{url, body, params, method, originalUrl,baseUrl, query}=req;
+        console.log('query ==> ', query);
         const action_req = {
             url: url,
             body: body,
             params: params,
             method: method,
             originalUrl:originalUrl,
-            baseUrl:baseUrl
+            baseUrl:baseUrl,
+            query: query
         }
         db.UserActivityLog.create({
                 admin_user_id: adminUser.id,
@@ -149,7 +151,7 @@ console.log('user!!!', data)
     },
     validateAdminUserOrSameUser: function(req, res, next) {
         if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
-        const data = auth.verifyAdminJwt(req.headers.authorization.split(' ')[1])
+        const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
         if(data.valid !== 1) return next(new Errors.Validation("No user token"));
         db.AdminUser.findOne({where: {id: data.id},

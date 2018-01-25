@@ -25,6 +25,7 @@ router.use('/admin-user', require('./admin_user'));
 router.use('/company', require('./company'));
 router.use('/distribution-center', require('./distribution_center'));
 router.use('/adminuser-country', require('./admin_user_country'));
+router.use('/admin-user-country', require('./admin_user_country'));
 router.use('/role', require('./role'));
 router.use('/feature-acl', require('./feature_ACL'));
 

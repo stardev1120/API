@@ -13,7 +13,8 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 0
         },
         max_session_time: DataTypes.STRING,
-        FAfield: DataTypes.STRING// todo ask customer about 2 fa field
+        FAfield: DataTypes.STRING,// todo ask customer about 2 fa fieldو
+        last_login: DataTypes.DATE
     },{
         underscored: true
     });

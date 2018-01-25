@@ -35,18 +35,5 @@ createJwtWithexpiresIn: (data, expiresIn) => {
   },
   generateToken: () => {
       return randomstring.generate(10);
-  },
-createAdminJwt: (data) => {
-    return jwt.sign(data, config.ADMIN_JWT_SALT, {
-        expiresIn: '2h'
-    });
-},
-createAdminJwtWithexpiresIn: (data, expiresIn) => {
-    return jwt.sign(data, config.ADMIN_JWT_SALT, {
-        expiresIn: expiresIn
-    });
-},
-verifyAdminJwt: (jwtString) => {
-    return jwt.verify(jwtString, config.ADMIN_JWT_SALT);
-},
+  }
 };

@@ -10,7 +10,7 @@ const router = require('express').Router();
 const dictionary = require('../dictionary.json');
 
 
-router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
+router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {name, country_code, status} = req.body;
 
 let query = {name: name, country_code: country_code, status: status};
@@ -20,13 +20,26 @@ db.Country.create(query)
     res.send(country);
 })
 .catch(err => res.send({err: err.message}))
-})
+});
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {offset, limit}=req.query;
-    db.Country.findAll({offset: offset*1, limit: limit*1, where: {}})
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+
+    db.Country.findAll(filter_1)
     .then((countries) => {
     res.send(countries)
+})
+.catch(err => next(err));
+});
+
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+
+    db.Country.findAll({where:filter_1.where})
+    .then((countries) => {
+        res.send({count:countries.length})
 })
 .catch(err => next(err));
 });

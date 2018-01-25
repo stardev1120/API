@@ -22,7 +22,6 @@
   "REDIS_PORT": 6379,
   "REDIS_HOST":"redis",
   "JWT_SALT":"JViorNB",
-  "ADMIN_JWT_SALT":"JViorNB",
   "port": 3000,
   "db": {
     "name": "umbrella_dev_db",

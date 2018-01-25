@@ -20,13 +20,26 @@ db.NonSupportedCountryLead.create(query)
     res.send(countryLead);
 })
 .catch(err => res.send({err: err.message}))
-})
+});
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {offset, limit}=req.query;
-    db.NonSupportedCountryLead.findAll({offset: offset*1, limit: limit*1, where: {}})
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+
+    db.NonSupportedCountryLead.findAll(filter_1)
     .then((countries) => {
     res.send(countries)
+})
+.catch(err => next(err));
+});
+
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+
+    db.NonSupportedCountryLead.findAll({where:filter_1.where})
+    .then((countries) => {
+    res.send({count:countries.length})
 })
 .catch(err => next(err));
 });
@@ -56,12 +69,10 @@ countryLead.save()
 .catch(err => next(err));
 });
 
-
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.NonSupportedCountryLead.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
 });
-
 
 module.exports = router;
