@@ -21,15 +21,47 @@ db.CountryInvestment.create(query)
 })
 .catch(err => res.send({err: err.message}))
 })
-
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-   const {country_id} = req.headers;
-    const {offset, limit}=req.query;
-   db.CountryInvestment.findAll({offset: offset*1, limit: limit*1, where: {},
-include:[
+    const {country_id} = req.headers;
+     const {offset, limit}=req.query;
+    db.CountryInvestment.findAll({offset: offset*1, limit: limit*1, where: {},
+ include:[
+     {
+         model: db.Country,
+         where: {id: country_id}
+     },
+ 
+     {
+         model: db.Loan
+     }
+ ]})
+     .then((countryInvestments) => {
+     res.send(countryInvestments)
+ })
+ .catch(err => next(err));
+ });
+
+ router.get('/country/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    // const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter)
+    db.CountryInvestment.findAll({where: filter_1.where})
+     .then((countryInvestments) => {
+     res.send({count:countryInvestments?countryInvestments.length:0})
+ })
+ .catch(err => next(err));
+ });
+  
+router.get('/country', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+   //const {country_id} = req.headers;
+   const {filter}=req.query;
+   const filter_1 = JSON.parse(filter);
+   
+   db.CountryInvestment.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where ,
+       include:[
     {
         model: db.Country,
-        where: {id: country_id}
+   //     where: {id: country_id}
     },
 
     {
@@ -43,14 +75,14 @@ include:[
 });
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+//    const {country_id} = req.headers;
     db.CountryInvestment.findOne({where: {
     id: req.params['id']
 },
     include:[
         {
             model: db.Country,
-            where: {id: country_id}
+  //          where: {id: country_id}
         },
 
         {
@@ -79,8 +111,8 @@ countryInvestment.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    db.CountryInvestment.destroy({where: {id: req.params['id']}})
+router.delete('/country/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    db.CountryInvestment.destroy({where: {id: req.params['id']*1}})
     .then(() => res.send(true))
 .catch(err => next(err));
 });

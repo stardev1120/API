@@ -38,15 +38,40 @@ include:[
 .catch(err => next(err));
 });
 
+router.get('/country/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    //const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+db.CountrySetting.findAll({where: filter_1.where})
+    .then((countrySettings) => res.send({count:countrySettings?countrySettings.length:0}))
+.catch(err => next(err));
+});
+
+router.get('/country', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    //const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+db.CountrySetting.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where ,
+include:[
+    {
+        model: db.Country,
+//        where: {id: country_id}
+    }
+]})
+    .then((countrySettings) => {
+    res.send(countrySettings)
+})
+.catch(err => next(err));
+});
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+   // const {country_id} = req.headers;
     db.CountrySetting.findOne({where: {
     id: req.params['id']
 },
     include:[
         {
             model: db.Country,
-            where: {id: country_id}
+     //       where: {id: country_id}
         }
     ]})
     .then((countrySetting) => {
@@ -70,7 +95,7 @@ countrySetting.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.delete('/country/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.CountrySetting.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

@@ -19,6 +19,7 @@ let query = {country_id: country_id, company_id: company_id, address: address, l
 db.DistributionCenter.create(query)
     .then(distributionCenter => {
     res.send(distributionCenter);
+    next();
 })
 .catch(err => res.send({err: err.message}))
 })
@@ -39,12 +40,36 @@ db.DistributionCenter.findAll({offset: offset*1, limit: limit*1, where: {},
 .catch(err => next(err));
 });
 
+router.get('/company/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    //const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+    db.DistributionCenter.findAll({where: filter_1.where})
+    .then((distributionCenter) => res.send({count:distributionCenter?distributionCenter.length:0}))
+.catch(err => next(err));
+});
+
+router.get('/company', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    //const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+    db.DistributionCenter.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where ,
+    include: [{
+        model: db.Country,
+        //where: {id: country_id}
+    },{
+        model: db.Company
+    }]})
+    .then((distributionCenter) =>res.send(distributionCenter))
+.catch(err => next(err));
+});
+
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    //const {country_id} = req.headers;
     db.DistributionCenter.findOne({where: {id: req.params['id']} ,
     include: [{
         model: db.Country,
-        where: {id: country_id}
+        //where: {id: country_id}
     },{
         model: db.Company
     }]})
@@ -72,7 +97,7 @@ distributionCenter.save()
 });
 
 
-router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.delete('/company/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.DistributionCenter.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));

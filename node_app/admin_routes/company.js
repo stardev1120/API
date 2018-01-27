@@ -30,7 +30,7 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
     db.Company.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where,
     include: [{
         model: db.Country,
-        where: {id: filter_1.where.country_id}
+       // where: {id: filter_1.where.country_id}
     }]})
     .then((companies) => {
     res.send(companies)
@@ -46,20 +46,20 @@ router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserUR
      db.Company.findAll({where: filter_1.where,
      include: [{
          model: db.Country,
-         where: {id: filter_1.where.country_id}
+         //where: {id: filter_1.where.country_id}
      }]})
      .then((companies) => {
-        res.send({count:companies.length})
+        res.send({count:companies?companies.length:0})
  })
  .catch(err => next(err));
  });
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
-    db.Company.findOne({where: {id: req.params['id']} ,
+    //const {country_id} = req.headers;
+    db.Company.findOne({where: {id: req.params['id']*1} ,
     include: [{
         model: db.Country,
-        where: {id: country_id}
+      //  where: {id: country_id}
     }]})
     .then((company) => {
     res.send(company)
@@ -78,7 +78,10 @@ company.company_address = company_address;
 company.contact_number = contact_number;
 company.country_id = country_id;
 company.save()
-    .then(user => res.send(company));
+    .then(company => {
+        res.json(company).status(200);
+        next()
+    });
 })
 .catch(err => next(err));
 });
