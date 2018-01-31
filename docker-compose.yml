@@ -82,9 +82,9 @@ services:
     links:
       - "db:mariadb"
     ports:
-      - 8080:9000
+      - 8070:9000
     expose:
-      - "8080"
+      - "8070"
     labels:
       - 'traefik.backend=adminer'
       - 'traefik.port=9000'

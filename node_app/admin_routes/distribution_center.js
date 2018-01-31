@@ -13,7 +13,6 @@ const sendMail = require('../helper/sendMail');
 
 router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth , (req, res, next) => {
     const {country_id, company_id, address, lat, long, contact_number} = req.body;
-
 let query = {country_id: country_id, company_id: company_id, address: address, lat: lat, long: long, contact_number: contact_number};
 
 db.DistributionCenter.create(query)

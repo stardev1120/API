@@ -110,10 +110,10 @@ console.log('user!!!', data)
     res.status(err.status || 500).send(err.message);
   },
  validateAdminUser: function(req, res, next) {
-        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
+        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.UnAuth("No user token"));
         const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
-        if(data.valid !== 1) return next(new Errors.Validation("No user token"));
+        if(data.valid !== 1) return next(new Errors.UnAuth("Invalid token"));
 
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
@@ -124,7 +124,7 @@ console.log('user!!!', data)
                 }]
             }]})
             .then((adminUser) => {
-            if (!adminUser) return next(new Errors.Validation("User not exist"));
+            if (!adminUser) return next(new Errors.UnAuth("User not exist"));
 
         const{url, body, params, method, originalUrl,baseUrl, query}=req;
         console.log('query ==> ', query);
@@ -137,8 +137,8 @@ console.log('user!!!', data)
             baseUrl:baseUrl,
             query: query
         }
-        db.UserActivityLog.create({
-                admin_user_id: adminUser.id,
+                db.UserActivityLog.create({
+                user_email: adminUser.email,
                 action: JSON.stringify(action_req),
                 payload:""
                 }).then(()=>{
@@ -150,16 +150,16 @@ console.log('user!!!', data)
         .catch(next);
     },
     validateAdminUserOrSameUser: function(req, res, next) {
-        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.Validation("No user token"));
+        if (!(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT')) return next(new Errors.UnAuth("No user token"));
         const data = auth.verifyJwt(req.headers.authorization.split(' ')[1])
         console.log('user!!!', data)
-        if(data.valid !== 1) return next(new Errors.Validation("No user token"));
+        if(data.valid !== 1) return next(new Errors.UnAuth("Invalid token"));
         db.AdminUser.findOne({where: {id: data.id},
             include: [{
                 model: db.Role
             }]})
             .then((adminUser) => {
-            if (!adminUser) return next(new Errors.Validation("User not exist"));
+            if (!adminUser) return next(new Errors.UnAuth("User not exist"));
         const{url, body, params, method, originalUrl, baseUrl}=req;
         const action_req = {
             url: url,
@@ -170,18 +170,18 @@ console.log('user!!!', data)
             baseUrl:baseUrl
         }
         db.UserActivityLog.create({
-            admin_user_id: adminUser.id,
+            user_email: adminUser.email,
             action: JSON.stringify(action_req),
             payload:""
         }).then();
         db.FeatureACL.findOne({where: {role_id: adminUser.role_id, feature_api_url: req.baseUrl}})
             .then((right) => {
-                if(!right)  return next(new Errors.Validation("you are not a admin"));
-
+                if(!right)  return next(new Errors.UnAuth("you are not a admin"));
                 if(req.body['country_id'] || req.params['country_id']) {
                     const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
                     db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
-                        if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
+                        if(!exist) return next(new Errors.UnAuth("You can't countinue because you don't have the selected country"));
+
                     req.user = adminUser;
                     next();
                 })
@@ -197,20 +197,22 @@ console.log('user!!!', data)
     checkAdminUserURLAuth: function(req, res, next){
         const adminUser = req.user;
         //const {country_id}= req.headers;
-        if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || adminUser.Role.FeatureACLs.length<=0||
+       if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || adminUser.Role.FeatureACLs.length<=0||
             (adminUser.Role.FeatureACLs[0].dataValues.feature_api_url !== req.baseUrl)) {
-            return next(new Errors.Validation("you are not a admin"));
+            return next(new Errors.UnAuth("you are not a admin"));
         }
 
         if(req.body['country_id'] || req.params['country_id']) {
             const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
             db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
-                if(!exist) return next(new Errors.Validation("you are not a admin --> country id"));
+                if(!exist) return next(new Errors.UnAuth("You can't countinue because you don't have the selected country"));
+req.user = adminUser;
                  return next();
             })
-            .catch(next);
-        }
+        } else {
+req.user = adminUser;
              return next();
+}
     },
     checkAdminUserActionAuth: function(req, res, next){
         const adminUser = req.user;
@@ -218,12 +220,12 @@ console.log('user!!!', data)
 
         if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || adminUser.Role.FeatureACLs.length<=0||
  !adminUser.Role.FeatureACLs[0].dataValues.actions) {
-            return next(new Errors.Validation("you are not a admin"));
+            return next(new Errors.UnAuth("you are not a admin"));
         }
 
         //const actions = JSON.parse(adminUser.Role.FeatureACLs[0].dataValues.actions);
         if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || !adminUser.Role.FeatureACLs[0].actions[method]) {
-            return next(new Errors.Validation("you don't have permission for this action"));
+            return next(new Errors.UnAuth("You don't have permission for this action"));
         }
         /*req.actions= actions;
         if(adminUser.Role.FeatureACLs[0].fields){
@@ -242,7 +244,7 @@ console.log('user!!!', data)
 
         db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
             .then((right)=> {
-            if(!right)  return next(new Errors.Validation("you didn't a supper admin or didn't have valid OTP"));
+            if(!right)  return next(new Errors.UnAuth("You didn't a supper admin or didn't have valid OTP"));
 
             return next()
         })

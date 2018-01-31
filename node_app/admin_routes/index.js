@@ -28,6 +28,7 @@ router.use('/adminuser-country', require('./admin_user_country'));
 router.use('/admin-user-country', require('./admin_user_country'));
 router.use('/role', require('./role'));
 router.use('/feature-acl', require('./feature_ACL'));
+//router.use('/user-activity');
 
 router.use('/user', require('./user'));
 router.use('/country', require('./country'));

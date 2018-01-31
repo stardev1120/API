@@ -114,9 +114,6 @@ db['Company'].hasMany(db['DistributionCenter']);
 db['FeatureACL'].belongsTo(db['Role']);
 db['Role'].hasMany(db['FeatureACL']);
 
-db['UserActivityLog'].belongsTo(db['AdminUser']);
-db['AdminUser'].hasMany(db['UserActivityLog']);
-
 db['AdminCollectDistribute'].belongsTo(db['Loan']);
 db['Loan'].hasMany(db['AdminCollectDistribute']);
 

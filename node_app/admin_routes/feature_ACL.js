@@ -47,12 +47,16 @@ router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLA
 });
 
 router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {role_id, feature_api_url} = req.body;
+    const {role_id, feature_api_url, actions, fields, other, module} = req.body;
 db.FeatureACL.findOne({where: {id: req.params['id']}})
     .then((featureACL) => {
     if(!featureACL) return next(new Errors.Validation("Feature ACL not exist"));
 featureACL.role_id = role_id;
 featureACL.feature_api_url = feature_api_url;
+featureACL.actions = actions; 
+featureACL.fields = fields; 
+featureACL.other = other;
+featureACL.module = module;
 featureACL.save()
     .then(user => res.send(featureACL));
 })
