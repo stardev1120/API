@@ -24,13 +24,18 @@ db.Company.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    //const {country_id} = req.headers;
+    const {country_id} = req.headers;
+var filterCountry = {
+}
+if(country_id){
+    filterCountry.id = country_id
+}
    const {filter}=req.query;
    const filter_1 = JSON.parse(filter);
     db.Company.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where,
     include: [{
         model: db.Country,
-       // where: {id: filter_1.where.country_id}
+        where: filterCountry
     }]})
     .then((companies) => {
     res.send(companies)
@@ -40,14 +45,20 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
 
 
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    //const {country_id} = req.headers;
+    const {country_id} = req.headers;
+var filterCountry = {
+}
+if(country_id){
+    filterCountry.id = country_id
+}
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
      db.Company.findAll({where: filter_1.where,
      include: [{
          model: db.Country,
-         //where: {id: filter_1.where.country_id}
-     }]})
+         where: filterCountry
+     }]
+     })
      .then((companies) => {
         res.send({count:companies?companies.length:0})
  })
@@ -55,11 +66,16 @@ router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserUR
  });
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    //const {country_id} = req.headers;
+    const {country_id} = req.headers;
+var filterCountry = {
+}
+if(country_id){
+    filterCountry.id = country_id
+}
     db.Company.findOne({where: {id: req.params['id']*1} ,
     include: [{
         model: db.Country,
-      //  where: {id: country_id}
+        where: filterCountry
     }]})
     .then((company) => {
     res.send(company)

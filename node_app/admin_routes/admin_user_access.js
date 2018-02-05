@@ -31,7 +31,9 @@ db.AdminUserAccess.create(query)
 //db.User.findOne({id: user_id}).then((user) => {
   //  if(!user) return next(new Errors.Validation("User not exist"));
 sendSMS(phone_number, req, otp).then(()=>{
-    res.send({"message": "done"+ otp});
+db.User.findOne({id: user_id}).then((user)=>{
+    res.send({"message": "done", user: user});
+});
 });
 
 //})
@@ -40,10 +42,17 @@ sendSMS(phone_number, req, otp).then(()=>{
 .catch(err => next(err));
 });
 
+router.post('/checkUser', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, 
+middlewares.checkAdminUserAccess2, (req, res, next) => {
+    return next();
+});
+
+
 router.put('/', (req, res, next) => {
+console.log(JSON.stringify(req.body));
     const otp = req.body.otp;
-    const user_id = req.body.user_id;
-        db.AdminUserAccess.findOne({otp:otp, user_id: user_id}).then((adminUserAccess)=>{
+    const user_id = req.body.user_id*1;
+        db.AdminUserAccess.findOne({where: {otp:otp, user_id: user_id}}).then((adminUserAccess)=>{
             adminUserAccess.status = 'Verified';
             adminUserAccess.date = addMinutes((new Date()), adminUserAccess.using_period)
             adminUserAccess.save().then((result)=>{

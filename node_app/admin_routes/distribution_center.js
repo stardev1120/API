@@ -25,11 +25,16 @@ db.DistributionCenter.create(query)
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id} = req.headers;
-const {offset, limit}=req.query;
+var filterCountry = {
+}
+if(country_id){
+    filterCountry.id = country_id
+}
+    const {offset, limit}=req.query;
 db.DistributionCenter.findAll({offset: offset*1, limit: limit*1, where: {},
     include: [{
         model: db.Country,
-        where: {id: country_id*1}
+        where: filterCountry
     },{
         model: db.Company
     }]})

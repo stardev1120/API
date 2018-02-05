@@ -40,7 +40,7 @@ var params = {
         return resolve({ "error": err });
         } // an error occurred
         else    { console.log(data); 
-        return resolve({ "message": "done" ,"code": varificationCode}); 
+        return resolve({ "message": "done"}); 
         }         // successful response
     });
 

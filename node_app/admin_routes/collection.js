@@ -11,14 +11,16 @@ const dictionary = require('../dictionary.json');
 
 
 router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {amount, date, currency, retry_date, status} = req.body;
+    const {amount, date, currency, retry_date, status, loan_id} = req.body;
 
 let query = {
     amount: amount,
     date: date,
     currency: currency,
     retry_date: retry_date,
-    status: status};
+    status: status,
+    loan_id: loan_id
+};
 
 db.Collection.create(query)
     .then(collection => {
@@ -28,7 +30,8 @@ db.Collection.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {offset, limit}=req.query;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
 var attributes=[];
 if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
@@ -54,10 +57,17 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         }
     }
 }
-db.Collection.findAll({attributes: attributes, offset: offset*1, limit: limit*1,where: {},
+db.Collection.findAll({attributes: attributes,
+    offset: filter_1.offset,
+    limit: filter_1.limit,
+    where: filter_1.where,
     include:[
         {
-            model: db.Loan
+            model: db.Loan,
+include: [{
+model: db.User,
+include: [{model: db.Country}]
+}]
         }
     ]})
     .then((Collections) => {
@@ -66,11 +76,31 @@ db.Collection.findAll({attributes: attributes, offset: offset*1, limit: limit*1,
 .catch(err => next(err));
 });
 
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+    db.Collection.findAll({where: filter_1.where})
+        .then((Collections) => {
+            res.send({count: Collections.length})
+        })
+        .catch(err => next(err));
+});
+
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     var attributes=[];
+    var include=[];
 if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields) {
     if (req.user.Role.FeatureACLs[0].fields['ALL']) {
-        attributes = ['id','amount', 'date', 'currency', 'retry_date', 'status']
+        attributes = ['id','amount', 'date', 'currency', 'retry_date', 'status', 'loan_id']
+        include = [
+            {
+                model: db.Loan,
+include: [{
+model: db.User,
+include: [{model: db.Country}]
+}]
+            }
+        ]
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
             attributes.push('id');
@@ -90,16 +120,24 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields) {
         if (req.user.Role.FeatureACLs[0].fields['status']) {
             attributes.push('status');
         }
+        if (req.user.Role.FeatureACLs[0].fields['loan']) {
+            attributes.push('loan_id');
+            include = [
+                {
+                    model: db.Loan,
+include: [{
+model: db.User,
+include: [{model: db.Country}]
+}]
+                }
+            ]
+        }
     }
 }
     db.Collection.findOne({attributes: attributes, where: {
         id: req.params['id']
     },
-        include:[
-            {
-                model: db.Loan
-            }
-        ]})
+        include:include})
         .then((collection) => {
         res.send(collection)
 })

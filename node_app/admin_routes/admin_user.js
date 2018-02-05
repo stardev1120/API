@@ -9,27 +9,57 @@ const middlewares = require('../middlewares');
 const router = require('express').Router();
 const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
+const recaptcha = require('../helper/recaptcha')
 var md5 = require('md5');
+const config = require('../config/config');
+const speakeasy = require('speakeasy')
 
-router.post('/login', (req, res, next) => {
+router.post('/login', recaptcha, (req, res, next) => {
     const password = md5(req.body.password);
     db.AdminUser.findOne({
-        where: {'email': req.body.email, 'password':  password}
+        where: {'email': req.body.email, 'password':  password},
+        include: [{
+            model: db.Role,
+            include:[{
+                model: db.FeatureACL,
+                where: {feature_api_url: req.baseUrl}
+            }]
+        }]
     }).then((adminUser) => {
         if (!adminUser) return next(new Errors.UnAuth("not exist adminUser"));
-
-        adminUser.update({number_password_attempt: adminUser.number_password_attempt+1, last_login: (new Date())}).then();
-        res.send({token: auth.createJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)});
+if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && !adminUser.two_factor_temp_secret && !adminUser.otpauth_url) {
+var secret = speakeasy.generateSecret();
+    adminUser.two_factor_temp_secret = secret.base32;
+    adminUser.otpauth_url = secret.otpauth_url;
+}
+        adminUser.update({number_password_attempt: adminUser.number_password_attempt+1, last_login: (new Date()),
+        two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',
+            otpauth_url: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.otpauth_url: ''}).then();
+        res.send({
+            token: auth.createJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)
+        });
     })
         .catch(err => res.send({err: err.message}))
 });
+router.post('/2-fa-verification', middlewares.validateAdminUser, function(req, res) {
+    const {faCode} = req.body;
+    var user = req.user;
+    var verified = speakeasy.totp.verify({
+        secret: user.two_factor_temp_secret,
+        encoding: 'base32',
+        token: faCode
+    });
+    //check if the token has changed
+    console.log(verified);
+    res.send({"verified": verified});
 
+});
 router.post('/forget-password', (req, res, next) => {
     db.AdminUser.findOne({where: {email: req.body.email}})
         .then((adminUser) => {
             if (!adminUser) return next(new Errors.Validation("User not exist"));
             const token=auth.createJwt({id: adminUser.id});
-            const baselink='http://localhost:3000/reset/';// todo we need to change it to be configurable.
+            const baselink = config.baseUrl + '/#/reset-password?token=';
             const link = `${baselink}${token}`;
             sendMail(req.body.email, 'Reset your password', link);
 
@@ -43,7 +73,7 @@ router.post('/forget-password', (req, res, next) => {
 router.put('/reset/:token', (req, res, next) => {
 
     const token = req.params['token'];
-    const new_password = req.body.password;
+    const new_password = req.body.newPassword;
     const data = auth.verifyJwt(token)
 
     db.AdminUser.findOne({
@@ -90,38 +120,43 @@ router.get('/md5/:password', function (req, res) {
 });
 
 router.post('/' , middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {name, email, password, phone_number, company_id, role_id, max_session_time, FAfield, AdminuserCountries} = req.body;
+    const {name, email, password, phone_number, company_id, role_id, max_session_time, AdminuserCountries} = req.body;
 
-    let query = {
-        name: name,
-        email: email,
-        password: md5(password),
-        company_id: company_id,
-        phone_number: phone_number,
-        role_id: role_id,
-        max_session_time: max_session_time,
-        FAfield:FAfield
-    };
+    if(req.user.Role.role_id != 'super_admin' && role_id == 'super_admin') {
+        res.send(new Errors.UnAuth("You do not have the permission to create super admin"))
+    }
+    else {
+        let query = {
+            name: name,
+            email: email,
+            password: md5(password),
+            company_id: company_id,
+            phone_number: phone_number,
+            role_id: role_id,
+            max_session_time: max_session_time
+        };
 
-    db.AdminUser.create(query)
-        .then(adminUser => {
-            if(AdminuserCountries && AdminuserCountries.length > 0)
-            {
-                var actions = AdminuserCountries.map((country) => {
-                    return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
-                })
-                var results = Promise.all(actions);
-                return results.then(data =>
+        db.AdminUser.create(query)
+            .then(adminUser => {
+                if(AdminuserCountries && AdminuserCountries.length > 0)
                 {
+                    var actions = AdminuserCountries.map((country) => {
+                        return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
+                    })
+                    var results = Promise.all(actions);
+                    return results.then(data =>
+                    {
+                        res.send({"message": "done"});
+                    }) ;
+                }
+                else {
                     res.send({"message": "done"});
-                }) ;
-            }
-            else {
-                res.send({"message": "done"});
-            }
-        })
-        .catch(err => res.send({err: err.message}))
-})
+                }
+            })
+            .catch(err => res.send({err: err.message}))
+    }
+
+});
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {filter}=req.query;
@@ -168,7 +203,10 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
         }]
     },
         {
-            model: db.AdminuserCountry
+            model: db.AdminuserCountry,
+include:[{
+model: db.Country
+}]
         },
         {
             model: db.Company
@@ -181,7 +219,7 @@ router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 
 
 router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    const {name, phone_number, email, company_id, role_id, max_session_time, FAfield, number_password_attempt, AdminuserCountries} = req.body;
+    const {name, phone_number, email, company_id, role_id, max_session_time, number_password_attempt, AdminuserCountries} = req.body;
     db.AdminUser.findOne({where: {id: req.params['id']}})
         .then((adminUser) => {
             if(!adminUser)return next(new Errors.Validation("User not exist"));
@@ -191,7 +229,6 @@ router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
             adminUser.company_id = company_id;
             adminUser.role_id = role_id;
             adminUser.max_session_time = max_session_time;
-            adminUser.FAfield = FAfield;
             adminUser.number_password_attempt = number_password_attempt;
             adminUser.save()
                 .then((adminUser) => {

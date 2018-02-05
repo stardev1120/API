@@ -130,8 +130,8 @@ console.log('user!!!', data)
         console.log('query ==> ', query);
         const action_req = {
             url: url,
-            body: body,
-            params: params,
+            body: JSON.stringify(body),
+            params: JSON.stringify(params),
             method: method,
             originalUrl:originalUrl,
             baseUrl:baseUrl,
@@ -139,8 +139,8 @@ console.log('user!!!', data)
         }
                 db.UserActivityLog.create({
                 user_email: adminUser.email,
-                action: JSON.stringify(action_req),
-                payload:""
+                action: {'action': action_req.baseUrl},
+                payload:action_req
                 }).then(()=>{
                 });
 
@@ -163,16 +163,16 @@ console.log('user!!!', data)
         const{url, body, params, method, originalUrl, baseUrl}=req;
         const action_req = {
             url: url,
-            body: body,
-            params: params,
+            body: JSON.stringify(body),
+            params: JSON.stringify(params),
             method: method,
             originalUrl:originalUrl,
             baseUrl:baseUrl
         }
         db.UserActivityLog.create({
             user_email: adminUser.email,
-            action: JSON.stringify(action_req),
-            payload:""
+            action: {'action':action_req.baseUrl},
+            payload: action_req
         }).then();
         db.FeatureACL.findOne({where: {role_id: adminUser.role_id, feature_api_url: req.baseUrl}})
             .then((right) => {
@@ -236,18 +236,35 @@ req.user = adminUser;
     checkAdminUserAccess: function(req, res, next) {
         const adminUser = req.user;
         const userId = req.params['id'];
-
-        if(adminUser.Role.FeatureACLs[0]&&adminUser.Role.FeatureACLs[0].fields&&
-            adminUser.Role.FeatureACLs[0].fields['ALL']){
+        if(adminUser.Role.FeatureACLs[0]&&adminUser.Role.FeatureACLs[0].other&&
+            adminUser.Role.FeatureACLs[0].other['viewWithoutOTP']){
             return next()
         }
-
-        db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
+if(adminUser.Role.FeatureACLs[0]&&adminUser.Role.FeatureACLs[0].other&&
+            adminUser.Role.FeatureACLs[0].other['viewWithOTP']){
+      return  db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
             .then((right)=> {
-            if(!right)  return next(new Errors.UnAuth("You didn't a supper admin or didn't have valid OTP"));
+            if(!right)  return next(new Errors.UnAuth("You didn't a super admin or didn't have valid OTP"));
 
             return next()
         })
         .catch(next);
+}
+return next(new Errors.UnAuth("You didn't have a permission to view user"));
+    },
+    checkAdminUserAccess2: function(req, res, next) {
+        const adminUser = req.user;
+        const userId = req.params['id']?req.params['id']:req.body.user_id;
+
+
+        db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
+            .then((right)=> {
+
+            if(!right)  return next(new Errors.UnAuth("You didn't a super admin or didn't have valid OTP"));
+res.send({"valid": true})
+            return next()
+        })
+        .catch(next);
+//return next(new Errors.UnAuth("You didn't have a permission to view user"));
     }
 }

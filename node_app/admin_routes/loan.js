@@ -33,20 +33,17 @@ db.Loan.create(query)
     res.send(loan);
 })
 .catch(err => res.send({err: err.message}))
-})
+});
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id}=req.headers;
-const {user_id, offset, limit}=req.query;
-var filterCountry = {
-}
+    const {country_id} = req.headers;
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+var filterCountry = {};
 if(country_id){
     filterCountry.id = country_id
 }
-var filter={};
-if(user_id){
-    filter.user_id = user_id
-}
+var userFilter={};
 var include = [];
 var attributes=[]
 if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
@@ -58,7 +55,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['USER'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push({
             model: db.User,
-            where: filter,
+            where: filter_1.where.user_id,
             include: [{
                 model:db.Country,
                 where:filterCountry
@@ -66,12 +63,12 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         })
     }
 
-    if(req.user.Role.FeatureACLs[0].fields['UserPaymentMethod'] || req.user.Role.FeatureACLs[0].fields['ALL']){
+    /*if(req.user.Role.FeatureACLs[0].fields['UserPaymentMethod'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push(
             {
                 model: db.UserPaymentMethod
             })
-    }
+    }*/
 
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
         attributes=['id', 'date_taken', 'amount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
@@ -112,13 +109,26 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         }
     }
 }
-db.Loan.findAll({attributes: attributes, offset: offset*1, limit: limit*1, where: {},
+db.Loan.findAll({attributes: attributes,
+    offset: filter_1.offset,
+    limit: filter_1.limit,
+    where: filter_1.where,
     include:include
 })
     .then((loans) => {
     res.send(loans)
 })
 .catch(err => next(err));
+});
+
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+    db.Loan.findAll({where:filter_1.where})
+        .then((loans) => {
+            res.send({count: loans.length})
+        })
+        .catch(err => next(err));
 });
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {

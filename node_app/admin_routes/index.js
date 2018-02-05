@@ -28,7 +28,7 @@ router.use('/adminuser-country', require('./admin_user_country'));
 router.use('/admin-user-country', require('./admin_user_country'));
 router.use('/role', require('./role'));
 router.use('/feature-acl', require('./feature_ACL'));
-//router.use('/user-activity');
+router.use('/user-activity-log', require('./user_activity_log'));
 
 router.use('/user', require('./user'));
 router.use('/country', require('./country'));
@@ -37,6 +37,8 @@ router.use('/non-supported-country-lead', require('./non_supported_country_lead'
 router.use('/country-investment', require('./country_investment'));
 router.use('/loan', require('./loan'));
 router.use('/collection', require('./collection'));
+router.use('/collection-history', require('./collection_history'));
 router.use('/admin-collect-distribute', require('./admin_collect_distribute'));
 router.use('/admin-user-access', require('./admin_user_access'));
+router.use('/dashboard', require('./dashboard'));
 module.exports = router;

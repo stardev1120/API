@@ -26,9 +26,9 @@ module.exports = {
                     role_id: 4,
                     module: 'collections',
                     feature_api_url: '/api/admin/collection',
-                    fields: '{}',
+                    fields: '{"ALL":true}',
                     actions: '{"GET": false, "PUT": true }',
-                    other: '{ "issueCollect": true }'
+                    other: '{ "collectMoney": true }'
                 },
                 {
                     role_id: 4,
@@ -91,13 +91,13 @@ module.exports = {
                     fields: '{}',
                     feature_api_url: '/api/admin/admin-user',
                     actions: '{ "GET":false, "POST": false, "PUT": false, "DELETE": false }',
-                    other: '{ "createSuperAdminUser": false }'
+                    other: '{ "createSuperAdminUser": false, "2FA": true }'
                 },
                 {
                     role_id: 4,
                     module: 'dashboard',
                     feature_api_url: '/api/admin/dashboard',
-                    actions: '{ "GET":true }',
+                    actions: '{ "GET":true, "POST":true }',
                     fields: '{}',
                     other: '{"total_of_users": true, ' +
                     '"total_of_loans": true,' +
@@ -110,16 +110,14 @@ module.exports = {
                     '"total_of_unverified_users": true,' +
                     '"total_of_users_profile_viewed_by_otp_access": true,' +
                     '"revenue": true,' +
-                    '"defaulted_loans": true,' +
-                    '"total_of_users_viewed_today_by_current_admin_user": true,' +
-                    '"total_of_distributes_by_current_admin_user": true,' +
-                    '"total_of_collection_by_current_admin_user": true' +
+                    '"duration_users_loans_collections": true,' +
+                    '"duration_users_amountOfLoans_amountOfCollections": true'+
                     '}'
                 },
                 {
                     role_id: 4,
                     module: 'user-activities',
-                    feature_api_url: '/api/admin/user-activity',
+                    feature_api_url: '/api/admin/user-activity-log',
                     actions: '{ "GET":true }',
                     fields: '{}',
                     other: '{}'
@@ -136,9 +134,9 @@ module.exports = {
                     role_id: 4,
                     module: 'admin-user-access',
                     feature_api_url: '/api/admin/admin-user-access',
-                    actions: '{ "GET":false, "PUT": false }',
+                    actions: '{ "GET":false, "PUT": false, "POST": false }',
                     fields: '{}',
-                    other: '{}'
+                    other: '{ "viewWithoutOTP": true, "viewWithOTP": false}'
                 },
                 {
                     role_id: 4,

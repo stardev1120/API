@@ -9,9 +9,16 @@ module.exports = {
                     module: 'users',
                     feature_api_url: '/api/admin/user',
                     actions: '{"GET": true, "PUT": true }',
-                    fields: '{"ALL": true, "updateStatusOfUser": true, "updateStatusOfDocument": true, ' +
-                    '"updateStatsOfPhone": true, "updateStatsOfFacebook": true, "updateStatsOfID": true, ' +
-                    '"updateStatsOfAddress": true, "LOAN": true }',
+                    fields: '{"ALL": true, "status": true, "fname": true, ' +
+                    '"mname": true, "lname": true, "email": true, ' +
+                    '"dob": true, "user_location": true, "access_token": true, "phone_number": true, ' +
+                    '"verified": true, "accept": true, "no_of_active_loans": true, ' +
+                    '"sex": true, "profilepic": true, "relationship": true, ' +
+                    '"available_amount": true, "min_availalble_amount": true, "number_of_attempts": true, "last_attempts_time": true, "umbrella_score": true, ' +
+                    '"fbId": true, "created_at": true, "smscode": true, "uScore_status": true, ' +
+                    '"id_proof_file": true, "selfie_proof_file": true, "address_proof_file": true, ' +
+                    '"id_verification_status": true, "address_verification_status": true, "updated_at": true, ' +
+                    '"country_id": true, "LOAN": true }',
                     other: '{ "viewWithoutOTP": false, "viewWithOTP": true, "triggerCreditStore": true}'
                 },
                 {
@@ -26,9 +33,9 @@ module.exports = {
                     role_id: 3,
                     module: 'collections',
                     feature_api_url: '/api/admin/collection',
-                    fields: '{}',
+                    fields: '{"ALL":false}',
                     actions: '{"GET": false, "PUT": false }',
-                    other: '{ "issueCollect": false }'
+                    other: '{ "collectMoney": false }'
                 },
                 {
                     role_id: 3,
@@ -91,13 +98,13 @@ module.exports = {
                     fields: '{}',
                     feature_api_url: '/api/admin/admin-user',
                     actions: '{ "GET":false, "POST": false, "PUT": false, "DELETE": false }',
-                    other: '{ "createSuperAdminUser": false }'
+                    other: '{ "createSuperAdminUser": false, "2FA": true }'
                 },
                 {
                     role_id: 3,
                     module: 'dashboard',
                     feature_api_url: '/api/admin/dashboard',
-                    actions: '{ "GET":true }',
+                    actions: '{ "GET":true, "POST":true }',
                     fields: '{}',
                     other: '{"total_of_users": true, ' +
                     '"total_of_loans": true,' +
@@ -110,16 +117,14 @@ module.exports = {
                     '"total_of_unverified_users": true,' +
                     '"total_of_users_profile_viewed_by_otp_access": true,' +
                     '"revenue": true,' +
-                    '"defaulted_loans": true,' +
-                    '"total_of_users_viewed_today_by_current_admin_user": true,' +
-                    '"total_of_distributes_by_current_admin_user": true,' +
-                    '"total_of_collection_by_current_admin_user": true' +
+                    '"duration_users_loans_collections": true,' +
+                    '"duration_users_amountOfLoans_amountOfCollections": true'+
                     '}'
                 },
                 {
                     role_id: 3,
                     module: 'user-activities',
-                    feature_api_url: '/api/admin/user-activity',
+                    feature_api_url: '/api/admin/user-activity-log',
                     actions: '{ "GET":true }',
                     fields: '{}',
                     other: '{}'
@@ -136,9 +141,9 @@ module.exports = {
                     role_id: 3,
                     module: 'admin-user-access',
                     feature_api_url: '/api/admin/admin-user-access',
-                    actions: '{ "GET":true, "PUT": true }',
+                    actions: '{ "GET":true, "PUT": true, "POST": true }',
                     fields: '{}',
-                    other: '{}'
+                    other: '{ "viewWithoutOTP": false, "viewWithOTP": false}'
                 },
                 {
                     role_id: 3,

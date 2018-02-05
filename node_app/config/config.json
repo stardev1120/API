@@ -13,8 +13,8 @@
     "formatter": null
   },
   "AWS":{
-    "accessKeyId": "AKIAIZ7SVEX4UZAATGHQ",
-    "secretAccessKey": "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",
+    "accessKeyId": "AKIAJCJF27UYT7D6DYTA",
+    "secretAccessKey": "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",
     "region": "ap-southeast-1",
     "apiVersion":"2010-03-31"
   },
@@ -36,8 +36,8 @@
   },
   "mail":{
     "auth": {
-      "user": "AKIAJVJZ5QLJLYMEMIBQ",
-      "pass": "AoZdViudu+0rBcy4MoDeqdl0DQN0uZsjKQhFODghk49+"
+      "user": "AKIAJCJF27UYT7D6DYTA",
+      "pass": "vPjH3X4T1j0X9aNFJ+4NI6UP5FruwncfIAXSfwS4"
     },
     "port": 25,
     "host": "email-smtp.us-east-1.amazonaws.com"
@@ -46,5 +46,8 @@
     "id":"142475749635054",
     "secret": "a65cca5cd07c605dfcf0b33e4a6bf23c"
 
-  }
+  },
+  "captchaSiteKey": "6LfjtEMUAAAAACnCnaYBFWzW8Id00qVZd3_64ibj",
+  "captchaSecretKey": "6LfjtEMUAAAAAHuOdSW2DlDDadezURzQD3BIzt_5",
+  "baseUrl": "localhost:4200"
 }

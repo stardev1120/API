@@ -5,7 +5,7 @@ module.exports = {
  return queryInterface.sequelize.query("ALTER TABLE Roles " +
             "MODIFY role_id varchar(255);").then(()=>{
         queryInterface.sequelize.query("INSERT INTO Roles (id, role_id, role_name) VALUES" +
-            "(1, 'Super Admin', 'supper_admin') ON DUPLICATE KEY UPDATE role_name='Supper Admin', role_id='supper_admin'").then();
+            "(1, 'Super Admin', 'super_admin') ON DUPLICATE KEY UPDATE role_name='Super Admin', role_id='super_admin'").then();
 
         queryInterface.sequelize.query("INSERT INTO Roles (id, role_id, role_name) VALUES" +         
             "(2, 'Admin', 'admin') ON DUPLICATE KEY UPDATE role_name='Admin', role_id='admin'").then();

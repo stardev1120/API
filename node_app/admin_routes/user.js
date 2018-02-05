@@ -7,144 +7,170 @@ const auth = require('../helper/auth');
 const Errors = require('../errors');
 const middlewares = require('../middlewares');
 const router = require('express').Router();
-const dictionary = require('../dictionary.json')
-const Sequelize = require('sequelize')
-
+const dictionary = require('../dictionary.json');
+const Sequelize = require('sequelize');
+const _ = require('lodash');
 
 const Op = Sequelize.Op;
 
-router.post('/search', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
     const {country_id}= req.headers;
-const{query:{name, email, phone_number}, cursor:{offset, limit}}=req.body
-
-var include = [];
-var attributes = [];
-
-if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
-    if((req.user.Role.FeatureACLs[0].fields['LOAN'] || req.user.Role.FeatureACLs[0].fields['ALL'])){
+    var include = [];
+    var attributes = [];
+    if(country_id){
         include.push({
-            model: db.Loan,
-            include:[
-                {
-                    model: db.Collection
+            model: db.Country,
+            where: {id: country_id*1}
+        });
+    }
+    if(_.isEmpty(filter_1.where)) {
+        res.send([])
+    } else {
+        if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
+            if((req.user.Role.FeatureACLs[0].fields['LOAN'] || req.user.Role.FeatureACLs[0].fields['ALL'])){
+                include.push({
+                    model: db.Loan,
+                    include:[
+                        {
+                            model: db.Collection
+                        }
+                    ]
+                })
+            }
+            if(req.user.Role.FeatureACLs[0].fields['ALL']){
+                attributes = ['id', 'fname', 'mname', 'lname','email','user_location','access_token','phone_number','verified','accept','no_of_active_loans','status','sex','profilepic','relationship',
+                    'available_amount','min_availalble_amount','number_of_attempts','last_attempts_time','umbrella_score','fbId','smscode','uScore_status','id_proof_file',
+                    'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status', 'country_id'];
+            } else {
+                if (req.user.Role.FeatureACLs[0].fields['id']) {
+                    attributes.push('id');
                 }
-            ]
+                if(req.user.Role.FeatureACLs[0].fields['fname']){
+                    attributes.push('fname')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['mname']){
+                    attributes.push('mname')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['lname']){
+                    attributes.push('lname')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['email']){
+                    attributes.push('email')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['user_location']){
+                    attributes.push('user_location')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['access_token']){
+                    attributes.push('access_token')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['phone_number']){
+                    attributes.push('phone_number')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['verified']){
+                    attributes.push('verified')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['accept']){
+                    attributes.push('accept')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['no_of_active_loans']){
+                    attributes.push('no_of_active_loans')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['status']){
+                    attributes.push('status')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['sex']){
+                    attributes.push('sex')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['profilepic']){
+                    attributes.push('profilepic')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['relationship']){
+                    attributes.push('relationship')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['available_amount']){
+                    attributes.push('available_amount')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['min_availalble_amount']){
+                    attributes.push('min_availalble_amount')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['number_of_attempts']){
+                    attributes.push('number_of_attempts')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['last_attempts_time']){
+                    attributes.push('last_attempts_time')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['umbrella_score']){
+                    attributes.push('umbrella_score')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['fbId']){
+                    attributes.push('fbId')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['smscode']){
+                    attributes.push('smscode')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['uScore_status']){
+                    attributes.push('uScore_status')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['id_proof_file']){
+                    attributes.push('id_proof_file')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['selfie_proof_file']){
+                    attributes.push('selfie_proof_file')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['address_proof_file']){
+                    attributes.push('address_proof_file')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['id_verification_status']){
+                    attributes.push('id_verification_status')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['address_verification_status']){
+                    attributes.push('address_verification_status')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['country_id']){
+                    attributes.push('country_id')
+                }
+            }
+        }
+        db.User.findAll({attributes: attributes,
+            offset: filter_1.offset,
+            limit: filter_1.limit,
+            where: filter_1.where,
+include: include
+
         })
+            .then((users) => {
+                res.send(users)
+            })
+            .catch(err => next(err));
     }
 
-    if(req.user.Role.FeatureACLs[0].fields['ALL']){
-        attributes = ['id', 'fname', 'mname', 'lname','email','user_location','access_token','phone_number','verified','accept','no_of_active_loans','status','sex','profilepic','relationship',
-            'available_amount','min_availalble_amount','number_of_attempts','last_attempts_time','umbrella_score','fbId','smscode','uScore_status','id_proof_file',
-            'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status'];
+});
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+    const filter_1 = JSON.parse(filter);
+    if(_.isEmpty(filter_1.where)) {
+        res.send({count: 0})
     } else {
-        if (req.user.Role.FeatureACLs[0].fields['id']) {
-            attributes.push('id');
-        }
-        if(req.user.Role.FeatureACLs[0].fields['fname']){
-            attributes.push('fname')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['mname']){
-            attributes.push('mname')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['lname']){
-            attributes.push('lname')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['email']){
-            attributes.push('email')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['user_location']){
-            attributes.push('user_location')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['access_token']){
-            attributes.push('access_token')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['phone_number']){
-            attributes.push('phone_number')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['verified']){
-            attributes.push('verified')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['accept']){
-            attributes.push('accept')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['no_of_active_loans']){
-            attributes.push('no_of_active_loans')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['status']){
-            attributes.push('status')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['sex']){
-            attributes.push('sex')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['profilepic']){
-            attributes.push('profilepic')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['relationship']){
-            attributes.push('relationship')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['available_amount']){
-            attributes.push('available_amount')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['min_availalble_amount']){
-            attributes.push('min_availalble_amount')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['number_of_attempts']){
-            attributes.push('number_of_attempts')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['last_attempts_time']){
-            attributes.push('last_attempts_time')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['umbrella_score']){
-            attributes.push('umbrella_score')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['fbId']){
-            attributes.push('fbId')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['smscode']){
-            attributes.push('smscode')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['uScore_status']){
-            attributes.push('uScore_status')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['id_proof_file']){
-            attributes.push('id_proof_file')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['selfie_proof_file']){
-            attributes.push('selfie_proof_file')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['address_proof_file']){
-            attributes.push('address_proof_file')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['id_verification_status']){
-            attributes.push('id_verification_status')
-        }
-        if(req.user.Role.FeatureACLs[0].fields['address_verification_status']){
-            attributes.push('address_verification_status')
-        }
+    db.User.findAll({where: filter_1.where})
+        .then((users) => {
+            res.send({count: users.length})
+        })
+        .catch(err => next(err));
     }
-}
-db.User.findAll({attributes: attributes, offset: offset*1, limit: limit*1, where:{
-    fname : { [Op.like]: '%' + name + '%'},
-    mname : { [Op.like]: '%' + name + '%'},
-    lname : { [Op.like]: '%' + name + '%'},
-    email : { [Op.like]: '%' + email + '%'},
-    phone_number : { [Op.like]: '%' + phone_number + '%'},
-    country_id: country_id
-},
-    include:include})
-    .then((users) => {
-    res.send(users)
-})
-.catch(err => next(err));
 });
 
-router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth,
-    middlewares.checkAdminUserAccess, (req, res, next) => {
+router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, middlewares.checkAdminUserAccess, (req, res, next) => {
     const {country_id}= req.headers;
-
 var include = [];
 var attributes = [];
-
+if(country_id){
+    include.push({
+        model: db.Country,
+        where: {id: country_id*1}
+    });
+}
 if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if((req.user.Role.FeatureACLs[0].fields['LOAN'] || req.user.Role.FeatureACLs[0].fields['ALL'])){
         include.push({
@@ -160,7 +186,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
         attributes = ['id', 'fname', 'mname', 'lname','email','user_location','access_token','phone_number','verified','accept','no_of_active_loans','status','sex','profilepic','relationship',
             'available_amount','min_availalble_amount','number_of_attempts','last_attempts_time','umbrella_score','fbId','smscode','uScore_status','id_proof_file',
-            'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status'];
+            'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status', 'country_id'];
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
             attributes.push('id');
@@ -246,11 +272,15 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         if(req.user.Role.FeatureACLs[0].fields['address_verification_status']){
             attributes.push('address_verification_status')
         }
+        if(req.user.Role.FeatureACLs[0].fields['country_id']){
+            attributes.push('country_id')
+        }
     }
 }
-db.User.findOne({attributes:attributes, where: {
-    id: req.params['id'],
-    country_id: country_id
+db.User.findOne({
+    attributes:attributes,
+    where: {
+    id: req.params['id']
 },
     include:include
 })
@@ -263,7 +293,7 @@ db.User.findOne({attributes:attributes, where: {
 router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {fname, mname, lname, email, dob, user_location, access_token,
         phone_number, verified, accept, no_of_active_loans, status, sex, profilepic, relationship, available_amount, min_availalble_amount, number_of_attempts,
-        last_attempts_time, umbrella_score, fbId, smscode, uScore_status, id_proof_file, selfie_proof_file, address_proof_file, id_verification_status, address_verification_status} = req.body;
+        last_attempts_time, umbrella_score, fbId, smscode, uScore_status, id_proof_file, selfie_proof_file, address_proof_file, id_verification_status, address_verification_status, country_id} = req.body;
 
 let query = {
     fname: fname,
@@ -293,7 +323,8 @@ let query = {
     selfie_proof_file: selfie_proof_file,
     address_proof_file:address_proof_file,
     id_verification_status: id_verification_status,
-    address_verification_status: address_verification_status
+    address_verification_status: address_verification_status,
+    country_id: country_id
 };
 
 db.User.create(query)
@@ -307,11 +338,12 @@ router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLA
     const {fname, mname, lname, email, dob, user_location, access_token,
         phone_number, verified, accept, no_of_active_loans, status, sex, profilepic, relationship, available_amount, min_availalble_amount, number_of_attempts,
         last_attempts_time, umbrella_score, fbId, smscode, uScore_status, id_proof_file, selfie_proof_file, address_proof_file, id_verification_status,
-        address_verification_status, loan_id} = req.body;
+        address_verification_status, loan_id, country_id} = req.body;
 
 db.User.findOne({where: {id: req.params['id']}})
     .then((user) => {
     if(!user) return next(new Errors.Validation("user is not existed"));
+        console.log("///////////////////////////////////////////", req.user.Role.FeatureACLs[0])
 
 if(req.user.Role.FeatureACLs[0].fields['fname'] || req.user.Role.FeatureACLs[0].fields['ALL']){
     user.fname= fname;
@@ -398,6 +430,9 @@ if(req.user.Role.FeatureACLs[0].fields['address_verification_status'] || req.use
     user.address_verification_status= address_verification_status;
 }
 
+if(req.user.Role.FeatureACLs[0].fields['country_id'] || req.user.Role.FeatureACLs[0].fields['ALL']){
+    user.country_id= country_id;
+}
 
 user.save()
     .then(user => res.send(user));
@@ -405,6 +440,10 @@ user.save()
 .catch(err => next(err));
 });
 
+router.put('/updateTrigerCreditScore/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {} = req.body;
+    res.send({success: true})
+});
 
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.User.destroy({where: {id: req.params['id']}})
