@@ -931,7 +931,7 @@ if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
         })
         res.json({data: resultArr1, sum: countObj[1]})
         next()
-    }).catch((error){return next(error)});
+    }).catch((error)=> next(error));
 });
 
 module.exports = router;
