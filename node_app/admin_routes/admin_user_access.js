@@ -16,7 +16,7 @@ router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAut
     const{user_id}=req.body
     const{id, phone_number}=req.user;
     const otp =Math.floor(100000 + Math.random() * 900000)
-let query={
+var query={
     admin_user_id: id,
     user_id: user_id,
     otp: otp,
