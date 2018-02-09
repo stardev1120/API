@@ -72,13 +72,13 @@ country.save()
 })
 .catch(err => next(err));
 });
-
+/*
 
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Country.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
-});
+});*/
 
 
 module.exports = router;

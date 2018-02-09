@@ -30,7 +30,7 @@ router.post('/login', recaptcha, (req, res, next) => {
 if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && !adminUser.two_factor_temp_secret && !adminUser.otpauth_url) {
 var secret = speakeasy.generateSecret();
     adminUser.two_factor_temp_secret = secret.base32;
-    adminUser.otpauth_url = secret.otpauth_url;
+    adminUser.otpauth_url = 'otpauth://totp/AppName:UmbrellaAdmin?secret='+secret.base32+'&issuer=AppName' //secret.otpauth_url;
 }
         adminUser.update({number_password_attempt: adminUser.number_password_attempt+1, last_login: (new Date()),
         two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',

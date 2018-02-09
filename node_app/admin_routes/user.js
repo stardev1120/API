@@ -42,7 +42,7 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
             if(req.user.Role.FeatureACLs[0].fields['ALL']){
                 attributes = ['id', 'fname', 'mname', 'lname','email','user_location','access_token','phone_number','verified','accept','no_of_active_loans','status','sex','profilepic','relationship',
                     'available_amount','min_availalble_amount','number_of_attempts','last_attempts_time','umbrella_score','fbId','smscode','uScore_status','id_proof_file',
-                    'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status', 'country_id'];
+                    'selfie_proof_file','address_proof_file','id_verification_status','address_verification_status', 'country_id', 'created_at', 'updated_at'];
             } else {
                 if (req.user.Role.FeatureACLs[0].fields['id']) {
                     attributes.push('id');
@@ -130,6 +130,12 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
                 }
                 if(req.user.Role.FeatureACLs[0].fields['country_id']){
                     attributes.push('country_id')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['created_at']){
+                    attributes.push('created_at')
+                }
+                if(req.user.Role.FeatureACLs[0].fields['updated_at']){
+                    attributes.push('updated_at')
                 }
             }
         }

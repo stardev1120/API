@@ -244,13 +244,13 @@ if(adminUser.Role.FeatureACLs[0]&&adminUser.Role.FeatureACLs[0].other&&
             adminUser.Role.FeatureACLs[0].other['viewWithOTP']){
       return  db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
             .then((right)=> {
-            if(!right)  return next(new Errors.UnAuth("You didn't a super admin or didn't have valid OTP"));
+            if(!right)  return next(new Errors.Forbidden("You didn't a super admin or didn't have valid OTP"));
 
             return next()
         })
         .catch(next);
 }
-return next(new Errors.UnAuth("You didn't have a permission to view user"));
+return next(new Errors.Forbidden("You didn't have a permission to view user"));
     },
     checkAdminUserAccess2: function(req, res, next) {
         const adminUser = req.user;
@@ -260,7 +260,7 @@ return next(new Errors.UnAuth("You didn't have a permission to view user"));
         db.AdminUserAccess.findOne({where:{admin_user_id: adminUser.id, user_id: userId, status: "Verified", date: {$gte: (new Date())}}})
             .then((right)=> {
 
-            if(!right)  return next(new Errors.UnAuth("You didn't a super admin or didn't have valid OTP"));
+            if(!right)  return next(new Errors.Forbidden("You didn't a super admin or didn't have valid OTP"));
 res.send({"valid": true})
             return next()
         })

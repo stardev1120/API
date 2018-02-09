@@ -13,5 +13,6 @@ module.exports = {
     InternalError: httpError(500, 'Bad request'),
     Bad: httpError(200, 'OK'),
     Validation: httpError(200, 'Validation fails'),
-    UnAuth: httpError(401, 'Unauthorized')
+    UnAuth: httpError(401, 'Unauthorized'),
+    Forbidden: httpError(403, 'Forbidden'),
 }

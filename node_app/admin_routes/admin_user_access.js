@@ -24,14 +24,14 @@ var query={
     date: (new Date()).getDate()+1,
     status: "NOTVerified"
 }
-
+db.User.findOne({where:{id: user_id}}).then((user)=>{
+if(!user) return next(new Errors.Validation("User not exist"));
 db.AdminUserAccess.create(query)
     .then(() => {
-
 //db.User.findOne({id: user_id}).then((user) => {
-  //  if(!user) return next(new Errors.Validation("User not exist"));
-sendSMS(phone_number, req, otp).then(()=>{
-db.User.findOne({id: user_id}).then((user)=>{
+    
+sendSMS(user.phone_number, req, otp).then(()=>{
+
     res.send({"message": "done", user: user});
 });
 });
@@ -53,6 +53,8 @@ console.log(JSON.stringify(req.body));
     const otp = req.body.otp;
     const user_id = req.body.user_id*1;
         db.AdminUserAccess.findOne({where: {otp:otp, user_id: user_id}}).then((adminUserAccess)=>{
+if(!adminUserAccess) return next(new Errors.Validation("Invalid OTP"));
+
             adminUserAccess.status = 'Verified';
             adminUserAccess.date = addMinutes((new Date()), adminUserAccess.using_period)
             adminUserAccess.save().then((result)=>{
