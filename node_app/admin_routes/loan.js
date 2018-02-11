@@ -11,12 +11,12 @@ const dictionary = require('../dictionary.json');
 
 
 router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {date_taken, amount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
+    const {date_taken, ammount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
         bank_credit_transaction, bank_credit_status, currency, user_id, user_payment_method_id} = req.body;
 
 let query = {
     date_taken: date_taken,
-    amount_taken: amount_taken,
+    ammount_taken: ammount_taken,
     service_fee: service_fee,
     interest_rate: interest_rate,
     duration_of_loan: duration_of_loan,
@@ -71,7 +71,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     }*/
 
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
-        attributes=['id', 'date_taken', 'amount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
+        attributes=['id', 'date_taken', 'ammount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
             'bank_credit_transaction', 'bank_credit_status', 'currency']
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
@@ -80,8 +80,8 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         if(req.user.Role.FeatureACLs[0].fields['date_taken'] ){
             attributes.push('date_taken');
         }
-        if(req.user.Role.FeatureACLs[0].fields['amount_taken'] ){
-            attributes.push('amount_taken');
+        if(req.user.Role.FeatureACLs[0].fields['ammount_taken'] ){
+            attributes.push('ammount_taken');
         }
         if(req.user.Role.FeatureACLs[0].fields['service_fee'] ){
             attributes.push('service_fee');
@@ -164,7 +164,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
             })
     }
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
-        attributes=['id', 'date_taken', 'amount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
+        attributes=['id', 'date_taken', 'ammount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
             'bank_credit_transaction', 'bank_credit_status', 'currency', 'user_id']
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
@@ -173,8 +173,8 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         if(req.user.Role.FeatureACLs[0].fields['date_taken']){
             attributes.push('date_taken');
         }
-        if(req.user.Role.FeatureACLs[0].fields['amount_taken']){
-            attributes.push('amount_taken');
+        if(req.user.Role.FeatureACLs[0].fields['ammount_taken']){
+            attributes.push('ammount_taken');
         }
         if(req.user.Role.FeatureACLs[0].fields['service_fee']){
             attributes.push('service_fee');
@@ -213,7 +213,7 @@ db.Loan.findOne({attributes:attributes, where: {
 });
 
 router.put('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {date_taken, amount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
+    const {date_taken, ammount_taken, service_fee, interest_rate, duration_of_loan, status, amount_pending,
         bank_credit_transaction, bank_credit_status, currency, user_id, user_payment_method_id} = req.body;
 
 db.Loan.findOne({where: {id: req.params['id']}})
@@ -223,8 +223,8 @@ db.Loan.findOne({where: {id: req.params['id']}})
 if(req.user.Role.FeatureACLs[0].fields['date_taken'] || req.user.Role.FeatureACLs[0].fields['ALL']){
     loan.date_taken = date_taken;
 }
-if(req.user.Role.FeatureACLs[0].fields['amount_taken'] || req.user.Role.FeatureACLs[0].fields['ALL']){
-    loan.amount_taken = amount_taken;
+if(req.user.Role.FeatureACLs[0].fields['ammount_taken'] || req.user.Role.FeatureACLs[0].fields['ALL']){
+    loan.ammount_taken = ammount_taken;
 }
 if(req.user.Role.FeatureACLs[0].fields['service_fee'] || req.user.Role.FeatureACLs[0].fields['ALL']){
     loan.service_fee = service_fee;

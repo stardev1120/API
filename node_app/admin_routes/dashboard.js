@@ -224,21 +224,21 @@ if (end_date) {
 if (whereClause === 'WHERE') {
     whereClause = '';
 }
-    var query = sequelize.sequelize.query('SELECT  MONTHNAME(created_at) as\'key\', SUM(amount_taken) as \'value\'\n' +
+    var query = sequelize.sequelize.query('SELECT  MONTHNAME(created_at) as\'key\', SUM(ammount_taken) as \'value\'\n' +
     'FROM Loans\n' +
     'where status = \'Active\'\n' +
     'GROUP BY  MONTHNAME(created_at);', {model: db.Loan});
-var count = sequelize.sequelize.query('SELECT SUM(amount_taken) as \'sum\'\n' +
+var count = sequelize.sequelize.query('SELECT SUM(ammount_taken) as \'sum\'\n' +
     'FROM Loans \n'+
     'where status = \'Active\';', {model: db.Loan});
 if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-    query = sequelize.sequelize.query('SELECT  MONTHNAME(loans.created_at) as \'key\', SUM(amount_taken) as \'value\'\n' +
+    query = sequelize.sequelize.query('SELECT  MONTHNAME(loans.created_at) as \'key\', SUM(ammount_taken) as \'value\'\n' +
         'FROM Loans as loans\n' +
         'inner join Users as users on loans.user_id = users.id  \n'+
         whereClause+'\n' +
         'GROUP BY  MONTHNAME(loans.created_at);', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
 
-    count = sequelize.sequelize.query('SELECT SUM(amount_taken) as \'sum\'\n' +
+    count = sequelize.sequelize.query('SELECT SUM(ammount_taken) as \'sum\'\n' +
         'FROM Loans as loans\n' +
         'inner join Users as users on loans.user_id = users.id  \n'+
         whereClause+'\n' +
@@ -819,12 +819,12 @@ var getLoansAmountPerMonth = function(country_id, start_date, end_date) {
     if (whereClause === 'WHERE') {
         whereClause = '';
     }
-    var query = sequelize.sequelize.query('SELECT  MONTHNAME(created_at) as\'key\', SUM(amount_taken) as \'loans\'\n' +
+    var query = sequelize.sequelize.query('SELECT  MONTHNAME(created_at) as\'key\', SUM(ammount_taken) as \'loans\'\n' +
         'FROM Loans\n' +
         'where status = \'Active\'\n' +
         'GROUP BY  MONTHNAME(created_at);', {model: db.Loan});
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  MONTHNAME(loans.created_at) as \'key\', SUM(amount_taken) as \'loans\'\n' +
+        query = sequelize.sequelize.query('SELECT  MONTHNAME(loans.created_at) as \'key\', SUM(ammount_taken) as \'loans\'\n' +
             'FROM Loans as loans\n' +
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
@@ -892,22 +892,22 @@ if (whereClause === 'WHERE') {
     whereClause = '';
 }
 
-var query = sequelize.sequelize.query('select  Date(date_taken) as \'key\', sum(ROUND((((duration_of_loan/365)*interest_rate*amount_taken)-service_fee), 2)) as \'value\'\n' +
+var query = sequelize.sequelize.query('select  Date(date_taken) as \'key\', sum(ROUND((((duration_of_loan/365)*interest_rate*ammount_taken)-service_fee), 2)) as \'value\'\n' +
     'from Loans\n' +
     'where status = \'active\'\n' +
     'group by Date(date_taken);', {model: db.Loan});
-var count = sequelize.sequelize.query('select  sum(ROUND((((duration_of_loan/365)*interest_rate*amount_taken)-service_fee), 2)) as \'sum\'\n' +
+var count = sequelize.sequelize.query('select  sum(ROUND((((duration_of_loan/365)*interest_rate*ammount_taken)-service_fee), 2)) as \'sum\'\n' +
     'from Loans\n' +
     'where status = \'active\';', {model: db.Loan});
 
 if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-    query = sequelize.sequelize.query('select   Date(loans.date_taken) as \'key\', sum(ROUND((((duration_of_loan/365)*interest_rate*amount_taken)-service_fee), 2)) as \'value\'\n' +
+    query = sequelize.sequelize.query('select   Date(loans.date_taken) as \'key\', sum(ROUND((((duration_of_loan/365)*interest_rate*ammount_taken)-service_fee), 2)) as \'value\'\n' +
         'FROM Loans as loans\n' +
         'inner join Users as users on loans.user_id = users.id  \n'+
         whereClause+'\n' +
         'GROUP BY  Date(loans.date_taken);', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
 
-    count = sequelize.sequelize.query('select  sum(ROUND((((duration_of_loan/365)*interest_rate*amount_taken)-service_fee), 2)) as \'sum\'\n' +
+    count = sequelize.sequelize.query('select  sum(ROUND((((duration_of_loan/365)*interest_rate*ammount_taken)-service_fee), 2)) as \'sum\'\n' +
         'FROM Loans as loans\n' +
         'inner join Users as users on loans.user_id = users.id  \n'+
         whereClause+'\n' +
