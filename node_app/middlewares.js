@@ -122,7 +122,11 @@ console.log('user!!!', data)
                     model: db.FeatureACL,
                     where: {feature_api_url: req.baseUrl}
                 }]
-            }]})
+            },{
+            model: db.AdminuserCountry,
+include:[{
+model: db.Country
+}]}]})
             .then((adminUser) => {
             if (!adminUser) return next(new Errors.UnAuth("User not exist"));
 
@@ -176,11 +180,11 @@ console.log('user!!!', data)
         }).then();
         db.FeatureACL.findOne({where: {role_id: adminUser.role_id, feature_api_url: req.baseUrl}})
             .then((right) => {
-                if(!right)  return next(new Errors.UnAuth("you are not a admin"));
-                if(req.body['country_id'] || req.params['country_id']) {
+                if(!right)  return next(new Errors.Forbidden("you are not a admin"));
+                if((req.body['country_id'] || req.params['country_id']) && (adminUser.role_id !== 1) ) {
                     const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
                     db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
-                        if(!exist) return next(new Errors.UnAuth("You can't countinue because you don't have the selected country"));
+                        if(!exist) return next(new Errors.Forbidden("You can't countinue because you don't have the selected country"));
 
                     req.user = adminUser;
                     next();
@@ -199,13 +203,13 @@ console.log('user!!!', data)
         //const {country_id}= req.headers;
        if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || adminUser.Role.FeatureACLs.length<=0||
             (adminUser.Role.FeatureACLs[0].dataValues.feature_api_url !== req.baseUrl)) {
-            return next(new Errors.UnAuth("you are not a admin"));
+            return next(new Errors.Forbidden("you are not a admin"));
         }
 
-        if(req.body['country_id'] || req.params['country_id']) {
+        if((req.body['country_id'] || req.params['country_id']) && (adminUser.role_id !== 1) ) {
             const country_id = req.body['country_id']?req.body['country_id']:req.params['country_id'];
             db.AdminuserCountry.findOne({where: {admin_user_id: adminUser.id, country_id: country_id}}).then((exist)=>{
-                if(!exist) return next(new Errors.UnAuth("You can't countinue because you don't have the selected country"));
+                if(!exist) return next(new Errors.Forbidden("You can't countinue because you don't have the selected country"));
 req.user = adminUser;
                  return next();
             })
@@ -220,12 +224,12 @@ req.user = adminUser;
 
         if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || adminUser.Role.FeatureACLs.length<=0||
  !adminUser.Role.FeatureACLs[0].dataValues.actions) {
-            return next(new Errors.UnAuth("you are not a admin"));
+            return next(new Errors.Forbidden("you are not a admin"));
         }
 
         //const actions = JSON.parse(adminUser.Role.FeatureACLs[0].dataValues.actions);
         if(!adminUser || !adminUser.Role || !adminUser.Role.FeatureACLs || !adminUser.Role.FeatureACLs[0].actions[method]) {
-            return next(new Errors.UnAuth("You don't have permission for this action"));
+            return next(new Errors.Forbidden("You don't have permission for this action"));
         }
         /*req.actions= actions;
         if(adminUser.Role.FeatureACLs[0].fields){

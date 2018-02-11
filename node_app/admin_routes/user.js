@@ -25,7 +25,8 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
             where: {id: country_id*1}
         });
     }
-    if(_.isEmpty(filter_1.where)) {
+console.log('req.user.Role.id ==> ', req.user.role_id)
+    if(_.isEmpty(filter_1.where) && req.user.role_id !== 1) {
         res.send([])
     } else {
         if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
@@ -156,7 +157,7 @@ include: include
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-    if(_.isEmpty(filter_1.where)) {
+    if(_.isEmpty(filter_1.where)&& req.user.role_id !== 1) {
         res.send({count: 0})
     } else {
     db.User.findAll({where: filter_1.where})

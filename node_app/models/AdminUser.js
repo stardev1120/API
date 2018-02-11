@@ -15,7 +15,11 @@ module.exports = function (sequelize, DataTypes) {
         max_session_time: DataTypes.STRING,
         two_factor_temp_secret: DataTypes.STRING,
         otpauth_url: DataTypes.STRING,
-        last_login: DataTypes.DATE
+        last_login: DataTypes.DATE,
+        is2FAVerified:{
+            type:DataTypes.BOOLEAN,
+            defaultValue: 0
+        },
     }, {
         underscored: true
     });

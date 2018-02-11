@@ -26,8 +26,8 @@ router.post('/login', recaptcha, (req, res, next) => {
             }]
         }]
     }).then((adminUser) => {
-        if (!adminUser) return next(new Errors.UnAuth("not exist adminUser"));
-if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && !adminUser.two_factor_temp_secret && !adminUser.otpauth_url) {
+        if (!adminUser) return next(new Errors.UnAuth("invalid email or password"));
+if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && (!adminUser.two_factor_temp_secret && !adminUser.otpauth_url || !adminUser.is2FAVerified)) {
 var secret = speakeasy.generateSecret();
     adminUser.two_factor_temp_secret = secret.base32;
     adminUser.otpauth_url = 'otpauth://totp/AppName:UmbrellaAdmin?secret='+secret.base32+'&issuer=AppName' //secret.otpauth_url;
@@ -50,20 +50,31 @@ router.post('/2-fa-verification', middlewares.validateAdminUser, function(req, r
         token: faCode
     });
     //check if the token has changed
-    console.log(verified);
-    res.send({"verified": verified});
+//    console.log(verified, faCode, user.two_factor_temp_secret);
+    if (verified) {
+        return db.AdminUser.findOne({
+            where: {'id': user.id}
+        }).then(function (adminUser) {
+            adminUser.update({
+                is2FAVerified: true
+            }).then();
+            res.send({"verified": verified});
+        })
+    } else {
+        res.send({"verified": verified});
+    }
 
 });
 router.post('/forget-password', (req, res, next) => {
     db.AdminUser.findOne({where: {email: req.body.email}})
         .then((adminUser) => {
-            if (!adminUser) return next(new Errors.Validation("User not exist"));
+            if (!adminUser) return next(new Errors.Validation("Counld not find a user with this email address."));
             const token=auth.createJwt({id: adminUser.id});
             const baselink = config.baseUrl + '/#/reset-password?token=';
             const link = `${baselink}${token}`;
             sendMail(req.body.email, 'Reset your password', link);
 
-            res.send({"message": link});
+            res.send({"message": "done"});
         })
         .catch(err => res.send({ err: err.message }));
 
@@ -222,7 +233,7 @@ router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
     const {name, phone_number, email, company_id, role_id, max_session_time, number_password_attempt, AdminuserCountries} = req.body;
     db.AdminUser.findOne({where: {id: req.params['id']}})
         .then((adminUser) => {
-            if(!adminUser)return next(new Errors.Validation("User not exist"));
+            if(!adminUser)return next(new Errors.Validation("Counld not find a user with this email address."));
             adminUser.name = name;
             adminUser.phone_number = phone_number;
             adminUser.email = email;
@@ -233,8 +244,7 @@ router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
             adminUser.save()
                 .then((adminUser) => {
                     db.AdminuserCountry.destroy({
-                        where: {adminuser_id: adminUser.id},
-                        truncate: true
+                        where: {admin_user_id: adminUser.id}
                     }).then(()=>{
                         if(AdminuserCountries && AdminuserCountries.length > 0){
                             var actions= AdminuserCountries.map((country) => {

@@ -17,7 +17,7 @@ module.exports = (req, res, next) =>{
         var parsedData = JSON.parse(data);
         if (parsedData.success) next();
         else {
-          res.status(409).json(parsedData)
+          res.status(409).json('invalid recaptcha')
         }
       } catch (e) {
         res.status(500).json('captcha api parsing error')
