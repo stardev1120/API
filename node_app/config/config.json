@@ -15,8 +15,11 @@
   "AWS":{
     "accessKeyId": "AKIAJCJF27UYT7D6DYTA",
     "secretAccessKey": "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",
-    "region": "ap-southeast-1",
-    "apiVersion":"2010-03-31"
+    "region": "ap-northeast-1",
+    "apiVersion":"2010-03-31",
+    "bucketName": "umbrella-images",
+    "urlBasic": "https://umbrella-images.s3.amazonaws.com/",
+    "defaultSignedUrlExpirationInSecs": 180
   },
   "envoirnment": "dev",
   "REDIS_PORT": 6379,

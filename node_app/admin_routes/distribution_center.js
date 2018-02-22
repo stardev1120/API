@@ -48,7 +48,7 @@ router.get('/company/count', middlewares.validateAdminUser, middlewares.checkAdm
     //const {country_id} = req.headers;
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-    db.DistributionCenter.findAll({where: filter_1.where})
+    db.DistributionCenter.findAll({where: filter_1.where, include: filter_1.include})
     .then((distributionCenter) => res.send({count:distributionCenter?distributionCenter.length:0}))
 .catch(err => next(err));
 });
@@ -57,13 +57,7 @@ router.get('/company', middlewares.validateAdminUser, middlewares.checkAdminUser
     //const {country_id} = req.headers;
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-    db.DistributionCenter.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where ,
-    include: [{
-        model: db.Country,
-        //where: {id: country_id}
-    },{
-        model: db.Company
-    }]})
+    db.DistributionCenter.findAll(filter_1)
     .then((distributionCenter) =>res.send(distributionCenter))
 .catch(err => next(err));
 });

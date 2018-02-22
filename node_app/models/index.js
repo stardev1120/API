@@ -78,17 +78,35 @@ db['User'].hasMany(db['CreditScoreHistory']);
 db['Loan'].belongsTo(db['User']);
 db['User'].hasMany(db['Loan']);
 
+db['Loan'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['Loan']);
+
 db['Loan'].belongsTo(db['UserPaymentMethod']);
 db['UserPaymentMethod'].hasMany(db['Loan']);
+
+db['LoansHistory'].belongsTo(db['Loan']);
+db['Loan'].hasMany(db['LoansHistory']);
 
 db['LoansHistory'].belongsTo(db['User']);
 db['User'].hasMany(db['LoansHistory']);
 
+db['LoansHistory'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['LoansHistory']);
+
 db['Collection'].belongsTo(db['Loan']);
-db['Loan'].hasMany(db['Collection']);
+db['Loan'].hasMany(db['Collection'], {as: 'Collection'});
+
+db['Collection'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['Collection']);
+
+db['CollectionHistory'].belongsTo(db['Collection']);
+db['Collection'].hasMany(db['CollectionHistory']);
 
 db['CollectionHistory'].belongsTo(db['Loan']);
 db['Loan'].hasMany(db['CollectionHistory']);
+
+db['CollectionHistory'].belongsTo(db['AdminUser']);
+db['AdminUser'].hasMany(db['CollectionHistory']);
 
 db['Company'].belongsTo(db['Country']);
 db['Country'].hasMany(db['Company']);

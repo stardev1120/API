@@ -1,5 +1,6 @@
 'use strict'
 const db = require('../models');
+const sequelize = require('../models');
 const geoip = require('geoip-lite');
 const randomstring = require('randomstring');
 const helper = require('../helper');
@@ -61,15 +62,7 @@ db.Collection.findAll({attributes: attributes,
     offset: filter_1.offset,
     limit: filter_1.limit,
     where: filter_1.where,
-    include:[
-        {
-            model: db.Loan,
-include: [{
-model: db.User,
-include: [{model: db.Country}]
-}]
-        }
-    ]})
+    include:filter_1.include})
     .then((Collections) => {
     res.send(Collections)
 })
@@ -79,7 +72,8 @@ include: [{model: db.Country}]
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-    db.Collection.findAll({where: filter_1.where})
+    db.Collection.findAll({where: filter_1.where,
+    include:filter_1.include})
         .then((Collections) => {
             res.send({count: Collections.length})
         })
@@ -95,10 +89,10 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields) {
         include = [
             {
                 model: db.Loan,
-include: [{
-model: db.User,
-include: [{model: db.Country}]
-}]
+                include: [{
+                        model: db.User,
+                        include: [{model: db.Country}]
+                }]
             }
         ]
     } else {
@@ -122,16 +116,15 @@ include: [{model: db.Country}]
         }
         if (req.user.Role.FeatureACLs[0].fields['loan']) {
             attributes.push('loan_id');
-            include = [
-                {
+            include .push({
                     model: db.Loan,
-include: [{
-model: db.User,
-include: [{model: db.Country}]
-}]
-                }
-            ]
-        }
+                    include: [{
+                    model: db.User,
+                    include: [{model: db.Country}]
+                    }]
+                })
+        }     
+
     }
 }
     db.Collection.findOne({attributes: attributes, where: {
@@ -172,6 +165,79 @@ collection.save()
 .catch(err => next(err));
 });
 
+router.put('/collect-money/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+
+    db.Collection.findOne({
+        where: {id: req.params['id']},
+    include:[
+        {
+            model:db.Loan,
+            include:[{
+                model:db.User
+            }]
+        }
+    ]
+    })
+    .then((collection) => {
+    if(!collection) return next(new Errors.Validation("collection is not existed"));
+    var collectionHistory = {
+        amount: collection.amount,
+        date: collection.created_at,
+        currency: collection.currency,
+        retry_date: collection.retry_date,
+        status: collection.status,
+        date_of_entry: collection.date_of_entry,
+        bank_response: '',
+        loan_id: collection.loan_id,
+        collection_id: collection.id,
+        admin_user_id: req.user.id
+    };
+    db.CollectionHistory.create(collectionHistory).then((collectionHistoryObj)=>{
+        collection.status = 'Collected';
+    collection.save().then((collectionObj)=> {
+        sequelize.sequelize.query('Select sum(amount_available) as sum from CountryInvestments where status =\'Active\' and country_id='+collection.Loan.User.country_id+' ;',
+        {model: db.CountryInvestment}).then((result)=>{
+        var sum = JSON.parse(JSON.stringify(result))
+        sequelize.sequelize.query('Update CountryInvestments set status = \'Disabled\' where status =\'Active\' and country_id='+collection.Loan.User.country_id+' ;').then((updated)=> {
+        var countryInvestment = {
+            amount_available: sum[0].sum+collectionObj.amount,
+            country_id: collection.Loan.User.country_id,
+            loan_id: collection.loan_id,
+            status: 'Active'
+        }
+        db.CountryInvestment.create(countryInvestment).then((countryInvestmentObj) => {
+            var adminCollectDistributes ={
+                transactionType: 'Collect Money',
+                amount: collection.Loan.amount_pending,
+                loan_id: collection.loan_id,
+                admin_user_id: req.user.id
+            }
+            db.AdminCollectDistribute.create(adminCollectDistributes)
+            .then(()=>{
+                var amount_pending = collection.Loan.amount_pending - collection.amount;
+                collection.Loan.amount_pending = amount_pending;
+                if(amount_pending <=0){
+                    collection.Loan.status = 'Closed';
+                }
+                collection.Loan.save().then(()=>{
+                  db.User.findOne({where:{id:collection.Loan.user_id}})
+                    .then((user)=>{
+                        user.available_amount=user.available_amount+ collection.Loan.amount_taken;
+                        user.no_of_active_loans = user.no_of_active_loans  - 1;
+                        user.save().then(()=>{
+                            res.send(collectionObj);
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
+})
+    })
+    })
+    .catch(err => next(err));
+});
 
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Collection.destroy({where: {id: req.params['id']}})

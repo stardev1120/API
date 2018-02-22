@@ -25,18 +25,9 @@ db.Company.create(query)
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id} = req.headers;
-var filterCountry = {
-}
-if(country_id){
-    filterCountry.id = country_id
-}
    const {filter}=req.query;
    const filter_1 = JSON.parse(filter);
-    db.Company.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where,
-    include: [{
-        model: db.Country,
-        where: filterCountry
-    }]})
+    db.Company.findAll(filter_1)
     .then((companies) => {
     res.send(companies)
 })
@@ -46,18 +37,10 @@ if(country_id){
 
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {country_id} = req.headers;
-var filterCountry = {
-}
-if(country_id){
-    filterCountry.id = country_id
-}
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
      db.Company.findAll({where: filter_1.where,
-     include: [{
-         model: db.Country,
-         where: filterCountry
-     }]
+     include: filter_1.include
      })
      .then((companies) => {
         res.send({count:companies?companies.length:0})

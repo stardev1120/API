@@ -29,17 +29,13 @@ const user=req.user;
 
     db.Country.findAll(filter_1)
     .then((countries) => {
-if(user.role_id !== 1){
-
 var lookup = _.map(JSON.parse(JSON.stringify(user.AdminuserCountries)), function(country){return country.Country.name+'-'+country.Country.country_code})
 
 var countries_filtered = _.filter(countries, function(country){
 return _.indexOf(lookup, country.name+'-'+country.country_code)>=0;
 });
     res.send(countries_filtered);
-} else {
-    res.send(countries);
-}
+
 })
 .catch(err => next(err));
 });

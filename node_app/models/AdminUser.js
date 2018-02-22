@@ -20,6 +20,8 @@ module.exports = function (sequelize, DataTypes) {
             type:DataTypes.BOOLEAN,
             defaultValue: 0
         },
+        photo: DataTypes.STRING,
+        status: DataTypes.STRING
     }, {
         underscored: true
     });

@@ -11,7 +11,8 @@ module.exports = function(sequelize, DataTypes) {
     amount_pending: DataTypes.DOUBLE,
     bank_credit_transaction: DataTypes.STRING,
     bank_credit_status : DataTypes.BOOLEAN,
-    currency: DataTypes.STRING
+    currency: DataTypes.STRING,
+	admin_user_id:	DataTypes.INTEGER
   },{
     underscored: true
   });

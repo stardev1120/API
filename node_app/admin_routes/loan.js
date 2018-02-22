@@ -1,5 +1,6 @@
 'use strict'
 const db = require('../models');
+const sequelize = require('../models');
 const geoip = require('geoip-lite');
 const randomstring = require('randomstring');
 const helper = require('../helper');
@@ -36,17 +37,10 @@ db.Loan.create(query)
 });
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-var filterCountry = {};
-if(country_id){
-    filterCountry.id = country_id
-}
-var userFilter={};
-var include = [];
 var attributes=[]
-if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
+/*if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['COLLECTION'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push({
             model: db.Collection
@@ -55,7 +49,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['USER'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push({
             model: db.User,
-            where: filter_1.where.user_id,
+            where: filter_1.where.user_id?{id:filter_1.where.user_id}:{},
             include: [{
                 model:db.Country,
                 where:filterCountry
@@ -63,7 +57,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         })
     }
 
-    /*if(req.user.Role.FeatureACLs[0].fields['UserPaymentMethod'] || req.user.Role.FeatureACLs[0].fields['ALL']){
+    if(req.user.Role.FeatureACLs[0].fields['UserPaymentMethod'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push(
             {
                 model: db.UserPaymentMethod
@@ -72,7 +66,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
 
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
         attributes=['id', 'date_taken', 'ammount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
-            'bank_credit_transaction', 'bank_credit_status', 'currency']
+            'bank_credit_transaction', 'bank_credit_status', 'currency', 'admin_user_id']
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
             attributes.push('id');
@@ -107,13 +101,16 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         if(req.user.Role.FeatureACLs[0].fields['currency']){
             attributes.push('currency');
         }
+        if(req.user.Role.FeatureACLs[0].fields['admin_user_id'] ){
+            attributes.push('admin_user_id');
+        }
     }
-}
+//}
 db.Loan.findAll({attributes: attributes,
     offset: filter_1.offset,
     limit: filter_1.limit,
     where: filter_1.where,
-    include:include
+    include:filter_1.include
 })
     .then((loans) => {
     res.send(loans)
@@ -124,7 +121,8 @@ db.Loan.findAll({attributes: attributes,
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
-    db.Loan.findAll({where:filter_1.where})
+    db.Loan.findAll({where:filter_1.where,
+    include:filter_1.include})
         .then((loans) => {
             res.send({count: loans.length})
         })
@@ -144,7 +142,8 @@ var attributes=[];
 if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
     if(req.user.Role.FeatureACLs[0].fields['COLLECTION'] || req.user.Role.FeatureACLs[0].fields['ALL']){
         include.push({
-            model: db.Collection
+            model: db.Collection,
+as: 'Collection'
         })
     }
     if(req.user.Role.FeatureACLs[0].fields['USER'] || req.user.Role.FeatureACLs[0].fields['ALL']){
@@ -163,9 +162,17 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
                 model: db.UserPaymentMethod
             })
     }
+
+    /*if(req.user.Role.FeatureACLs[0].fields['LoansHistory'] || req.user.Role.FeatureACLs[0].fields['ALL']){
+        include.push(
+            {
+                model: db.LoansHistory
+            })
+    }*/
+
     if(req.user.Role.FeatureACLs[0].fields['ALL']){
         attributes=['id', 'date_taken', 'ammount_taken', 'service_fee', 'interest_rate', 'duration_of_loan', 'status', 'amount_pending',
-            'bank_credit_transaction', 'bank_credit_status', 'currency', 'user_id']
+            'bank_credit_transaction', 'bank_credit_status', 'currency', 'user_id', 'created_at']
     } else {
         if (req.user.Role.FeatureACLs[0].fields['id']) {
             attributes.push('id');
@@ -200,6 +207,7 @@ if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){
         if(req.user.Role.FeatureACLs[0].fields['currency']){
             attributes.push('currency');
         }
+	attributes.push('created_at');
     }
 }
 db.Loan.findOne({attributes:attributes, where: {
@@ -263,6 +271,68 @@ loan.save()
 .catch(err => next(err));
 });
 
+router.put('/issue-money/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    db.Loan.findOne({
+        where: {id: req.params['id']},
+        include:[{
+            model:db.User
+        }]
+    })
+    .then((loan) => {
+    if(!loan) return next(new Errors.Validation("loan is not existed"));
+    if(!loan.User)return next(new Errors.Validation("loan's user is not existed"));
+    sequelize.sequelize.query('Select sum(amount_available) as sum from CountryInvestments where status =\'Active\' and country_id='+loan.User.country_id+' ;',
+        {model: db.CountryInvestment}).then((result)=>{
+        var sum = JSON.parse(JSON.stringify(result))
+            if(sum[0].sum > loan.ammount_taken){
+                sequelize.sequelize.query('Update CountryInvestments set status = \'Disabled\' where status =\'Active\' and country_id='+loan.User.country_id+';').then((updated)=>{
+                    var countryInvestment = {
+                        amount_available: sum[0].sum - loan.ammount_taken,
+                        country_id: loan.User.country_id,
+                        loan_id: loan.id,
+                        status: 'Active'
+                    }
+                    db.CountryInvestment.create(countryInvestment).then((countryInvestmentObj)=>{
+                        var loanHistory = {
+                            bank_id: '',
+                            date_taken: loan.date_taken,
+                            ammount_taken: loan.ammount_taken,
+                            service_fee: loan.service_fee,
+                            interest_rate: loan.interest_rate,
+                            duration_of_loan: loan.duration_of_loan,
+                            status: loan.status,
+                            date: loan.created_at,
+                            amount_pending: loan.amount_pending,
+                            bank_credit_transaction: loan.bank_credit_transaction,
+                            bank_credit_status: loan.bank_credit_status,
+                            currency: loan.currency,
+                            user_id: loan.user_id,
+                            loan_id: loan.id,
+                            admin_user_id: req.user.id
+                        }
+                        db.LoansHistory.create(loanHistory).then((loanHistoryObj)=>{
+                         loan.status = 'Active';
+                         loan.admin_user_id = req.user.id;
+                            loan.save()
+                            .then(loanSaved => {
+                                var adminCollectDistributes ={
+                                    transactionType: 'Issue Money',
+                                    amount: loan.amount_pending,
+                                    loan_id: loan.id,
+                                    admin_user_id: req.user.id
+                                }
+                                db.AdminCollectDistribute.create(adminCollectDistributes)
+                                .then(()=>res.send(loanSaved))
+                            });                      
+                })
+            })
+        }).catch(err => next(err));
+    } else {
+        return next(new Errors.Validation("You cannot issue loan becuase User's country investment amount less than loan amount"));
+    }
+    })
+})
+});
 
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.Loan.destroy({where: {id: req.params['id']}})

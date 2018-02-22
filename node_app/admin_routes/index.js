@@ -41,4 +41,6 @@ router.use('/collection-history', require('./collection_history'));
 router.use('/admin-collect-distribute', require('./admin_collect_distribute'));
 router.use('/admin-user-access', require('./admin_user_access'));
 router.use('/dashboard', require('./dashboard'));
+router.use('/s3', require('./s3'));
+router.use('/loan-history', require('./loan_history'));
 module.exports = router;

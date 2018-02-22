@@ -27,6 +27,7 @@ router.post('/login', recaptcha, (req, res, next) => {
         }]
     }).then((adminUser) => {
         if (!adminUser) return next(new Errors.UnAuth("invalid email or password"));
+        if (adminUser.status !== 'Active') return next(new Errors.UnAuth("you will not be able to login. Please, Contact Umbrella Admin"));      
 if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && (!adminUser.two_factor_temp_secret && !adminUser.otpauth_url || !adminUser.is2FAVerified)) {
 var secret = speakeasy.generateSecret();
     adminUser.two_factor_temp_secret = secret.base32;
@@ -39,7 +40,7 @@ var secret = speakeasy.generateSecret();
             token: auth.createJwtWithexpiresIn({id: adminUser.id, valid:1}, adminUser.max_session_time)
         });
     })
-        .catch(err => res.send({err: err.message}))
+        .catch(err => next(new Errors.InternalError(err.message)))
 });
 router.post('/2-fa-verification', middlewares.validateAdminUser, function(req, res) {
     const {faCode} = req.body;
@@ -65,6 +66,31 @@ router.post('/2-fa-verification', middlewares.validateAdminUser, function(req, r
     }
 
 });
+router.put('/reset-2-fa', middlewares.validateAdminUser, function(req, res) {
+    var user = req.user;
+    db.AdminUser.findOne({
+        where: {'id': user.id},
+        include: [{
+            model: db.Role,
+            include:[{
+                model: db.FeatureACL,
+                where: {feature_api_url: req.baseUrl}
+            }]
+        }]
+    }).then((adminUser) => {
+        if (!adminUser) return next(new Errors.UnAuth("invalid email or password"));
+    if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA']) {
+        var secret = speakeasy.generateSecret();
+        adminUser.two_factor_temp_secret = secret.base32;
+        adminUser.otpauth_url = 'otpauth://totp/AppName:UmbrellaAdmin?secret='+secret.base32+'&issuer=AppName' //secret.otpauth_url;
+    }
+    adminUser.update({ two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',
+        otpauth_url: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.otpauth_url: '', is2FAVerified: false}).then();
+    res.send({"message": "done"});
+})
+.catch(err => next(new Errors.InternalError(err.message)))
+
+});
 router.post('/forget-password', (req, res, next) => {
     db.AdminUser.findOne({where: {email: req.body.email}})
         .then((adminUser) => {
@@ -76,7 +102,7 @@ router.post('/forget-password', (req, res, next) => {
 
             res.send({"message": "done"});
         })
-        .catch(err => res.send({ err: err.message }));
+.catch(err => next(new Errors.InternalError(err.message)));
 
 
 });
@@ -98,7 +124,7 @@ router.put('/reset/:token', (req, res, next) => {
             res.send({"message": "done"});
         });
     })
-        .catch(err => res.send({err: err.message}))
+.catch(err => next(new Errors.InternalError(err.message)));
 });
 
 router.put('/change-password', middlewares.validateAdminUser, (req, res, next) => {
@@ -115,7 +141,13 @@ router.put('/change-password', middlewares.validateAdminUser, (req, res, next) =
     }
 });
 
-
+router.put('/admin/change-password', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+        req.user.update({
+            password: md5(req.body.password)
+        }).then(()=>{
+            res.send({"message": "done"});
+        });
+});
 router.post('/logout', middlewares.validateAdminUser, function (req, res) {
     res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:0}, 1)});
     //res.send("logout success!");
@@ -131,7 +163,7 @@ router.get('/md5/:password', function (req, res) {
 });
 
 router.post('/' , middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {name, email, password, phone_number, company_id, role_id, max_session_time, AdminuserCountries} = req.body;
+    const {name, email, password, phone_number, company_id, role_id, max_session_time, status, AdminuserCountries} = req.body;
 
     if(req.user.Role.role_id != 'super_admin' && role_id == 'super_admin') {
         res.send(new Errors.UnAuth("You do not have the permission to create super admin"))
@@ -144,7 +176,8 @@ router.post('/' , middlewares.validateAdminUser, middlewares.checkAdminUserURLAu
             company_id: company_id,
             phone_number: phone_number,
             role_id: role_id,
-            max_session_time: max_session_time
+            max_session_time: max_session_time,
+            status: status
         };
 
         db.AdminUser.create(query)
@@ -164,7 +197,7 @@ router.post('/' , middlewares.validateAdminUser, middlewares.checkAdminUserURLAu
                     res.send({"message": "done"});
                 }
             })
-            .catch(err => res.send({err: err.message}))
+    .catch(err => next(new Errors.InternalError(err.message)))
     }
 
 });
@@ -173,24 +206,11 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
 
-    db.AdminUser.findAll({
-        offset: filter_1.offset,
-        limit: filter_1.limit,
-        where: filter_1.where,
-        include: [{
-            model: db.Role
-        },
-            {
-                model: db.AdminuserCountry
-            },
-            {
-                model: db.Company
-            }]
-    })
+    db.AdminUser.findAll(filter_1)
         .then((adminUsers) => {
             res.send(adminUsers)
         })
-        .catch(err => next(err));
+.catch(err => next(new Errors.InternalError(err.message)))
 });
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {filter}=req.query;
@@ -199,7 +219,7 @@ router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserUR
         .then((adminUsers) => {
             res.send({count: adminUsers.length})
         })
-        .catch(err => next(err));
+.catch(err => next(new Errors.InternalError(err.message)))
 });
 
 router.get('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
@@ -225,12 +245,12 @@ model: db.Country
 })
     .then((adminUser) => {
     res.send(adminUser)
-}).catch(err => next(err));
+    }).catch(err => next(new Errors.InternalError(err.message)));
 })
 
 
 router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
-    const {name, phone_number, email, company_id, role_id, max_session_time, number_password_attempt, AdminuserCountries} = req.body;
+    const {name, phone_number, email, company_id, role_id, max_session_time, number_password_attempt, AdminuserCountries, photo, status} = req.body;
     db.AdminUser.findOne({where: {id: req.params['id']}})
         .then((adminUser) => {
             if(!adminUser)return next(new Errors.Validation("Counld not find a user with this email address."));
@@ -241,6 +261,8 @@ router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
             adminUser.role_id = role_id;
             adminUser.max_session_time = max_session_time;
             adminUser.number_password_attempt = number_password_attempt;
+	        adminUser.photo = photo;
+	        adminUser.status = status;
             adminUser.save()
                 .then((adminUser) => {
                     db.AdminuserCountry.destroy({
@@ -261,15 +283,18 @@ router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => 
 
                 });
         })
-        .catch(err => next(err));
+.catch(err => next(new Errors.InternalError(err.message)))
 });
 
 
 router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     db.AdminUser.destroy({where: {id: req.params['id']}})
-        .then(() => res.send(true)).catch(err => next(err))
-        .catch(err => next(err));
-});
+        .then(() => res.send(true))
+.catch(err => next(new Errors.InternalError(err.message)))
+})
+
+
+
 
 
 module.exports = router;

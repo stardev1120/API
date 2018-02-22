@@ -48,22 +48,58 @@ middlewares.checkAdminUserAccess2, (req, res, next) => {
 });
 
 
-router.put('/', (req, res, next) => {
+router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+	const {country_id} = req.headers;
+    const {filter}=req.query;
+const filter_1 = JSON.parse(filter);
+var filterCountry = {};
+if(country_id){
+    filterCountry.id = country_id
+}
+db.AdminUserAccess.findAll(filter_1)
+    .then((adminUserAccesses) => {
+    res.send(adminUserAccesses)
+})
+.catch(err => next(err));
+});
+
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+	const {country_id} = req.headers;
+    const {filter}=req.query;
+const filter_1 = JSON.parse(filter);
+var filterCountry = {};
+if(country_id){
+    filterCountry.id = country_id
+}
+
+db.AdminUserAccess.findAll({where: filter_1.where,
+    include:filter_1.include
+})
+    .then((adminUserAccesses) => {
+    res.send({count:adminUserAccesses.length})
+})
+.catch(err => next(err));
+});
+
+router.put('/', function(req, res, next) {
 console.log(JSON.stringify(req.body));
     const otp = req.body.otp;
     const user_id = req.body.user_id*1;
-        db.AdminUserAccess.findOne({where: {otp:otp, user_id: user_id}}).then((adminUserAccess)=>{
-if(!adminUserAccess) return next(new Errors.Validation("Invalid OTP"));
-
-            adminUserAccess.status = 'Verified';
-            adminUserAccess.date = addMinutes((new Date()), adminUserAccess.using_period)
-            adminUserAccess.save().then((result)=>{
+        db.AdminUserAccess.findAll({
+            limit: 1,
+            where: {user_id: user_id},
+            order: [ [ 'created_at', 'DESC' ]]
+        }).then((adminUserAccess)=>{
+            if(!adminUserAccess) return next(new Errors.Validation("Invalid OTP"));
+            if(adminUserAccess && adminUserAccess[0] && adminUserAccess[0].otp !== otp) {return next(new Errors.Validation("Invalid OTP.."));}
+            adminUserAccess[0].status = 'Verified';
+            adminUserAccess[0].date = addMinutes((new Date()), adminUserAccess[0].using_period)
+            adminUserAccess[0].save().then((result)=>{
                         res.send({"message": "done"});
                 });
     })
     .catch(err => res.send({err: err.message}))
-    });
-
+});
 
 function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes*60000);

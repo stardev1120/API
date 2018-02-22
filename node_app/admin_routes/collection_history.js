@@ -11,7 +11,7 @@ const dictionary = require('../dictionary.json')
 const sendMail = require('../helper/sendMail');
 
 
-router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth,  (req, res, next) => {
+/*router.post('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth,  (req, res, next) => {
     const {amount, date, currency, retry_date, status, date_of_entry, bank_response, collection_id} = req.body;
 
 let query = {amount: amount, date: date, currency: currency, retry_date: retry_date, status: status,
@@ -22,17 +22,13 @@ db.CollectionHistory.create(query)
     res.send(collectionHistory);
 })
 .catch(err => res.send({err: err.message}))
-})
+})*/
 
-router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.get('/', middlewares.validateAdminUser, (req, res, next) => {
     //const {country_id} = req.headers;
    const {filter}=req.query;
    const filter_1 = JSON.parse(filter);
-    db.CollectionHistory.findAll({offset: filter_1.offset, limit: filter_1.limit, where: filter_1.where,
-    include: [{
-        model: db.Collection,
-       // where: {id: filter_1.where.country_id}
-    }]})
+    db.CollectionHistory.findAll(filter_1)
     .then((collectionsHistory) => {
     res.send(collectionsHistory)
 })
@@ -40,7 +36,7 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
 });
 
 
-router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+router.get('/count', middlewares.validateAdminUser, (req, res, next) => {
     //const {country_id} = req.headers;
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
@@ -55,7 +51,7 @@ router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserUR
  .catch(err => next(err));
  });
 
-router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+/*router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     //const {country_id} = req.headers;
     db.CollectionHistory.findOne({where: {id: req.params['id']*1} ,
     include: [{
@@ -95,7 +91,7 @@ router.delete('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserU
     db.CollectionHistory.destroy({where: {id: req.params['id']}})
     .then(() => res.send(true))
 .catch(err => next(err));
-});
+});*/
 
 
 module.exports = router;

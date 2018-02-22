@@ -47,6 +47,7 @@ module.exports = function(sequelize, DataTypes) {
    id_proof_file: DataTypes.STRING,
    selfie_proof_file: DataTypes.STRING,
    address_proof_file: DataTypes.STRING,
+   selfie_proof_video: DataTypes.STRING,
    id_verification_status: DataTypes.STRING,
    address_verification_status: DataTypes.STRING
   },{

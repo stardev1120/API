@@ -23,10 +23,23 @@ db.AdminCollectDistribute.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {offset, limit}=req.query;
-db.AdminCollectDistribute.findAll({offset: offset*1, limit: limit*1, where: {}})
+    const {filter}=req.query;
+const filter_1 = JSON.parse(filter);
+
+db.AdminCollectDistribute.findAll(filter_1)
     .then((adminCollectDistributes) => {
     res.send(adminCollectDistributes)
+})
+.catch(err => next(err));
+});
+
+router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
+    const {filter}=req.query;
+const filter_1 = JSON.parse(filter);
+
+db.AdminCollectDistribute.findAll({where:filter_1.where, include: filter_1.include})
+    .then((adminCollectDistributes) => {
+    res.send({count:adminCollectDistributes.length})
 })
 .catch(err => next(err));
 });
