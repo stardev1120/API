@@ -22,7 +22,7 @@ db.CountryInvestment.create(query)
 .catch(err => res.send({err: err.message}))
 })
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    /*const {country_id} = req.headers;
      const {offset, limit}=req.query;
     db.CountryInvestment.findAll({offset: offset*1, limit: limit*1, where: {},
  include:[
@@ -38,7 +38,7 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
      .then((countryInvestments) => {
      res.send(countryInvestments)
  })
- .catch(err => next(err));
+ .catch(err => next(err));*/
  });
 
  router.get('/country/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {

@@ -60,7 +60,7 @@ function init_umbrella_api(){
   app.use(function(req, res, next) {
     res.setHeader("Access-Control-Allow-Credentials", 'true');
     res.setHeader("Access-Control-Allow-Origin", '*');
-    res.setHeader("Access-Control-Allow-Headers", 'Origin, X-Request-With, Content-Type, Accept, country_id');
+    res.setHeader("Access-Control-Allow-Headers", 'Origin, X-Request-With, Content-Type, Accept');
     next();
   });
 

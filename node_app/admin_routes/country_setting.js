@@ -23,7 +23,7 @@ db.CountrySetting.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    /*const {country_id} = req.headers;
 const {offset, limit}=req.query;
 db.CountrySetting.findAll({offset: offset*1, limit: limit*1, where: {},
 include:[
@@ -35,7 +35,7 @@ include:[
     .then((countrySettings) => {
     res.send(countrySettings)
 })
-.catch(err => next(err));
+.catch(err => next(err));*/
 });
 
 router.get('/country/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {

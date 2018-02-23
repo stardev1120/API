@@ -49,13 +49,13 @@ middlewares.checkAdminUserAccess2, (req, res, next) => {
 
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-	const {country_id} = req.headers;
+	/*const {country_id} = req.headers;
     const {filter}=req.query;
 const filter_1 = JSON.parse(filter);
 var filterCountry = {};
 if(country_id){
     filterCountry.id = country_id
-}
+}*/
 db.AdminUserAccess.findAll(filter_1)
     .then((adminUserAccesses) => {
     res.send(adminUserAccesses)
@@ -64,13 +64,13 @@ db.AdminUserAccess.findAll(filter_1)
 });
 
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-	const {country_id} = req.headers;
+	/*const {country_id} = req.headers;
     const {filter}=req.query;
 const filter_1 = JSON.parse(filter);
 var filterCountry = {};
 if(country_id){
     filterCountry.id = country_id
-}
+}*/
 
 db.AdminUserAccess.findAll({where: filter_1.where,
     include:filter_1.include

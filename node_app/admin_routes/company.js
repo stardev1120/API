@@ -24,7 +24,7 @@ db.Company.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    // const {country_id} = req.headers;
    const {filter}=req.query;
    const filter_1 = JSON.parse(filter);
     db.Company.findAll(filter_1)
@@ -36,7 +36,7 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
 
 
 router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    // const {country_id} = req.headers;
     const {filter}=req.query;
     const filter_1 = JSON.parse(filter);
      db.Company.findAll({where: filter_1.where,
@@ -49,16 +49,16 @@ router.get('/count', middlewares.validateAdminUser, middlewares.checkAdminUserUR
  });
 
 router.get('/:id', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-    const {country_id} = req.headers;
+    /*const {country_id} = req.headers;
 var filterCountry = {
 }
 if(country_id){
     filterCountry.id = country_id
-}
+}*/
     db.Company.findOne({where: {id: req.params['id']*1} ,
     include: [{
         model: db.Country,
-        where: filterCountry
+        //where: filterCountry
     }]})
     .then((company) => {
     res.send(company)
