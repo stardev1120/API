@@ -17,7 +17,16 @@ let query = {name: name, country_code: country_code, status: status};
 
 db.Country.create(query)
     .then(country => {
+    if(!!country && req.user.role_id === 1){
+    let query = {admin_user_id: req.user.id, country_id: country.id};
+
+    db.AdminuserCountry.create(query)
+        .then(adminuserCountry => {
+        res.send(country);
+        })
+    } else {
     res.send(country);
+    }
 })
 .catch(err => res.send({err: err.message}))
 });

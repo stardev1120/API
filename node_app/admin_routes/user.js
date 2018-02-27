@@ -25,7 +25,9 @@ router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth
    //         where: {id: country_id*1}
         });
     //}
-    if(_.isEmpty(filter_1.where) && req.user.role_id !== 1) {
+    if((_.isEmpty(filter_1.where) ||
+            (_.keys(filter_1.where) && _.keys(filter_1.where).length ===1 && _.keys(filter_1.where)[0] === 'country_id')) &&
+        req.user.role_id !== 1) {
         res.send([])
     } else {
         if(req.user.Role.FeatureACLs[0]&&req.user.Role.FeatureACLs[0].fields){

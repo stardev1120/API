@@ -31,7 +31,7 @@ router.post('/login', recaptcha, (req, res, next) => {
 if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] && (!adminUser.two_factor_temp_secret && !adminUser.otpauth_url || !adminUser.is2FAVerified)) {
 var secret = speakeasy.generateSecret();
     adminUser.two_factor_temp_secret = secret.base32;
-    adminUser.otpauth_url = 'otpauth://totp/AppName:UmbrellaAdmin?secret='+secret.base32+'&issuer=AppName' //secret.otpauth_url;
+    adminUser.otpauth_url = `otpauth://totp/Umbrella%20Admin:${adminUser.email}?secret=`+secret.base32+`&issuer=Umbrella%20Admin` //secret.otpauth_url;
 }
         adminUser.update({number_password_attempt: adminUser.number_password_attempt+1, last_login: (new Date()),
         two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',
@@ -82,7 +82,7 @@ router.put('/reset-2-fa', middlewares.validateAdminUser, function(req, res) {
     if(adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA']) {
         var secret = speakeasy.generateSecret();
         adminUser.two_factor_temp_secret = secret.base32;
-        adminUser.otpauth_url = 'otpauth://totp/AppName:UmbrellaAdmin?secret='+secret.base32+'&issuer=AppName' //secret.otpauth_url;
+        adminUser.otpauth_url = `otpauth://totp/Umbrella%20Admin:${adminUser.email}?secret=`+secret.base32+`&issuer=Umbrella%20Admin` //secret.otpauth_url;
     }
     adminUser.update({ two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',
         otpauth_url: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.otpauth_url: '', is2FAVerified: false}).then();
@@ -142,11 +142,14 @@ router.put('/change-password', middlewares.validateAdminUser, (req, res, next) =
 });
 
 router.put('/admin/change-password', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-        req.user.update({
-            password: md5(req.body.password)
-        }).then(()=>{
-            res.send({"message": "done"});
-        });
+db.AdminUser.findOne({where: {id: req.body.id}})
+    .then((adminUser) => {
+    if(!adminUser) return next(new Errors.Validation("Admin user is not existed"));
+adminUser.password = md5(req.body.password);
+adminUser.save()
+    .then(adminUser => res.send(adminUser));
+})
+.catch(err => next(err));
 });
 router.post('/logout', middlewares.validateAdminUser, function (req, res) {
     res.send({token: auth.createJwtWithexpiresIn({id:req.user.id, valid:0}, 1)});
@@ -165,8 +168,8 @@ router.get('/md5/:password', function (req, res) {
 router.post('/' , middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
     const {name, email, password, phone_number, company_id, role_id, max_session_time, status, AdminuserCountries} = req.body;
 
-    if(req.user.Role.role_id != 'super_admin' && role_id == 'super_admin') {
-        res.send(new Errors.UnAuth("You do not have the permission to create super admin"))
+    if(req.user.Role.role_id !== 1 && role_id === 1) {
+        return next(new Errors.Forbidden("You do not have the permission to create super admin"))
     }
     else {
         let query = {
@@ -251,39 +254,49 @@ model: db.Country
 
 router.put('/:id', middlewares.validateAdminUserOrSameUser, (req, res, next) => {
     const {name, phone_number, email, company_id, role_id, max_session_time, number_password_attempt, AdminuserCountries, photo, status} = req.body;
+
+if(req.user.role_id !== 1 && role_id === 1) {
+    return next(new Errors.Forbidden("You do not have the permission to update super admin"))
+}
+else {
     db.AdminUser.findOne({where: {id: req.params['id']}})
         .then((adminUser) => {
-            if(!adminUser)return next(new Errors.Validation("Counld not find a user with this email address."));
-            adminUser.name = name;
-            adminUser.phone_number = phone_number;
-            adminUser.email = email;
-            adminUser.company_id = company_id;
-            adminUser.role_id = role_id;
-            adminUser.max_session_time = max_session_time;
-            adminUser.number_password_attempt = number_password_attempt;
-	        adminUser.photo = photo;
-	        adminUser.status = status;
-            adminUser.save()
-                .then((adminUser) => {
-                    db.AdminuserCountry.destroy({
-                        where: {admin_user_id: adminUser.id}
-                    }).then(()=>{
-                        if(AdminuserCountries && AdminuserCountries.length > 0){
-                            var actions= AdminuserCountries.map((country) => {
-                                return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
-                            })
-                            var results = Promise.all(actions);
-                            return results.then(data => {
-                                res.send(adminUser)
-                            }).catch(err => next(err));
-                        } else {
-                            res.send(adminUser)
-                        }
-                    }).catch(err => next(err));
-
-                });
+        if(!adminUser)return next(new Errors.Validation("Counld not find a user with this email address."));
+    if(req.user.Role.role_id !== 1 && adminUser.role_id === 1) {
+        return next(new Errors.Forbidden("You do not have the permission to create super admin"))
+    }
+    adminUser.name = name;
+    adminUser.phone_number = phone_number;
+    adminUser.email = email;
+    adminUser.company_id = company_id;
+    adminUser.role_id = role_id;
+    adminUser.max_session_time = max_session_time;
+    adminUser.number_password_attempt = number_password_attempt;
+    adminUser.photo = photo;
+    adminUser.status = status;
+    adminUser.save()
+        .then((adminUser) => {
+        if(AdminuserCountries && AdminuserCountries.length > 0){
+return db.AdminuserCountry.destroy({
+        where: {admin_user_id: adminUser.id}
+    }).then(()=>{
+var actions= AdminuserCountries.map((country) => {
+            return db.AdminuserCountry.create({admin_user_id: adminUser.id, country_id: country})
         })
+        var results = Promise.all(actions);
+        return results.then(data => {
+            res.send(adminUser)
+    })
+})      
+    } else {
+        res.send(adminUser)
+    }
+}).catch(err => next(err));
+})
+
+
 .catch(err => next(new Errors.InternalError(err.message)))
+}
 });
 
 

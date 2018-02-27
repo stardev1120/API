@@ -364,19 +364,19 @@ var runSuperAdminDashboardCharts = function(country_id, start_date, end_date){
     //revenue-per-date
     promises.push(revenue_per_date(country_id, start_date, end_date)); 
     promises.push(revenue_per_date_sum(country_id, start_date, end_date));
-
     return Promise.all(promises).then((result)=>{
         var countObj = JSON.parse(JSON.stringify(result));
     //users-per-date
+
     var resultArr1 = _.map(result[0], function(n){
         var key = 'key';
         var nObj = JSON.parse(JSON.stringify(n));
-        return nObj[key];
+        return nObj[key]
     });
     var resultArr2 = _.map(result[0], function(n){
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
-        return nObj[value];
+        return nObj[value]
     });
     var resultArr3 = [];
     resultArr3.push(resultArr1);
@@ -407,7 +407,7 @@ var runSuperAdminDashboardCharts = function(country_id, start_date, end_date){
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[value]
-    })
+    });
     resultArr3 = [];
     resultArr3.push(resultArr1);
     resultArr3.push(resultArr2);
@@ -422,7 +422,7 @@ var runSuperAdminDashboardCharts = function(country_id, start_date, end_date){
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[value]
-    })
+    });
     resultArr3 = [];
     resultArr3.push(resultArr1);
     resultArr3.push(resultArr2);
@@ -582,7 +582,7 @@ var runSuperAdminDashboardCharts = function(country_id, start_date, end_date){
     results['revenue-per-date'] = {data: resultArr1, sum: countObj[27][0].sum};
     return results
 })
-}
+};
 var runAdminDashboardCharts = function(country_id, start_date, end_date){
     var promises = [];
     var results={};
@@ -734,10 +734,9 @@ var runAdminDashboardCharts = function(country_id, start_date, end_date){
     resultArr3.push(resultArr1);
     resultArr3.push(resultArr2);
     results['unverified-users-per-date'] = {data: resultArr3, count: countObj[15][0].count};
-
     return results
 })
-}
+};
 var runCallCenterDashboardCharts = function(country_id, start_date, end_date, admin_user_id){
     var promises = [];
     var results={};
@@ -783,33 +782,33 @@ var runCallCenterDashboardCharts = function(country_id, start_date, end_date, ad
 
     return results
 })
-}
+};
 var runDistributorAdminDashboardCharts = function(country_id, start_date, end_date, adminUser){
     var promises = [];
     var results={};
     //collections-per-date-by-current
     promises.push(collections_per_date_by_current(country_id, start_date, end_date, adminUser.id));
     promises.push(collections_per_date_by_current_count(country_id, start_date, end_date, adminUser.id));
-//Distributes-per-date-by-current
+    //Distributes-per-date-by-current
     promises.push(Distributes_per_date_by_current(country_id, start_date, end_date, adminUser.id));
     promises.push(Distributes_per_date_by_current_count(country_id, start_date,
         end_date, adminUser.id));
-//issued-amount-per-date-by-current
+    //issued-amount-per-date-by-current
     promises.push(issued_amount_per_date_by_current(country_id, start_date, end_date, adminUser.id));
     promises.push(issued_amount_per_date_by_current_sum(country_id, start_date, end_date, adminUser.id));
-//collected-amount-per-date-by-current
+    //collected-amount-per-date-by-current
     promises.push(collected_amount_per_date_by_current(country_id, start_date, end_date, adminUser.id));
     promises.push(collected_amount_per_date_by_current_sum(country_id, start_date, end_date, adminUser.id));
-//Distributes-per-date-by-company
+    //Distributes-per-date-by-company
     promises.push(Distributes_per_date_by_company(country_id, start_date, end_date, adminUser));
     promises.push(Distributes_per_date_by_company_count(country_id, start_date, end_date, adminUser));
-//collections-per-date-by-company
+    //collections-per-date-by-company
     promises.push(collections_per_date_by_company(country_id, start_date, end_date, adminUser));
     promises.push(collections_per_date_by_company_count(country_id, start_date, end_date, adminUser));
-//issued-amount-per-date-by-company
+    //issued-amount-per-date-by-company
     promises.push(issued_amount_per_date_by_company(country_id, start_date, end_date, adminUser));
     promises.push(issued_amount_per_date_by_company_sum(country_id, start_date, end_date, adminUser));
-//collected-amount-per-date-by-company
+    //collected-amount-per-date-by-company
     promises.push(collected_amount_per_date_by_company(country_id, start_date, end_date, adminUser));
     promises.push(collected_amount_per_date_by_company_sum(country_id, start_date, end_date, adminUser));
     return Promise.all(promises).then((result)=>{
@@ -938,7 +937,7 @@ var runDistributorAdminDashboardCharts = function(country_id, start_date, end_da
 
     return results
 })
-}
+};
 var runDistributorDashboardCharts = function(country_id, start_date, end_date, admin_user_id){
     var promises = [];
     var results={};
@@ -969,7 +968,7 @@ var runDistributorDashboardCharts = function(country_id, start_date, end_date, a
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[value]
-    })
+    });
     resultArr3 = [];
     resultArr3.push(resultArr1);
     resultArr3.push(resultArr2);
@@ -980,7 +979,7 @@ var runDistributorDashboardCharts = function(country_id, start_date, end_date, a
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[key]
     });
-    resultArr2 = _.map(result[2], function(n){
+    resultArr2 = _.map(valuess2, function(n){
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[value]
@@ -995,7 +994,7 @@ var runDistributorDashboardCharts = function(country_id, start_date, end_date, a
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[key]
     });
-    var resultArr2 = _.map(result[4], function(n){
+    resultArr2 = _.map(valuess2, function(n){
         var value = 'value';
         var nObj = JSON.parse(JSON.stringify(n));
         return nObj[value]
@@ -1019,10 +1018,9 @@ var runDistributorDashboardCharts = function(country_id, start_date, end_date, a
     resultArr3.push(resultArr1);
     resultArr3.push(resultArr2);
     results['distributes-per-date-by-current'] = {data: resultArr3, count: countObj[7][0].count};
-
     return results
 })
-}
+};
 
 // 1 - 2
 var users_per_date = function(country_id, start_date, end_date){
@@ -1052,13 +1050,23 @@ var users_per_date = function(country_id, start_date, end_date){
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.User});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\', COUNT(*) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\', COUNT(*) as \'value\'\n' +
             'FROM Users\n' +
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\')';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  Date(created_at) as \'key1\', COUNT(*) as \'value\'\n' +
+                'FROM Users\n' +
+                whereClause+'\n' +
+                'GROUP BY  Date(created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
-}
+};
 var users_per_date_count = function(country_id, start_date, end_date){
     var filter = {};
     var whereClause = 'WHERE';
@@ -1118,15 +1126,24 @@ var loans_per_date = function(country_id, start_date, end_date){
     var query = sequelize.sequelize.query('SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\', COUNT(*) as \'value\'\n' +
         'FROM Loans\n' +
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.Loan});
-    var count = sequelize.sequelize.query('SELECT COUNT(*) as \'count\'\n' +
-        'FROM Loans;', {model: db.Loan});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', COUNT(loans.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', COUNT(loans.id) as \'value\'\n' +
             'FROM Loans as loans\n' +
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(loans.created_at) as \'key1\', COUNT(loans.id) as \'value\'\n' +
+                'FROM Loans as loans\n' +
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(loans.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1195,12 +1212,24 @@ var collections_per_date = function(country_id, start_date, end_date){
         'GROUP BY  DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(collections.created_at) as \'key\', COUNT(collections.id) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1267,11 +1296,22 @@ var issued_amount_per_date = function (country_id, start_date, end_date) {
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.Loan});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(ammount_taken) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(ammount_taken) as \'value\'\n' +
             'FROM Loans as loans\n' +
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(loans.created_at) as \'key1\', SUM(ammount_taken) as \'value\'\n' +
+                'FROM Loans as loans\n' +
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(loans.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1339,12 +1379,24 @@ var collected_amount_per_date = function(country_id, start_date, end_date){
         'where collections.status = \'Collected\'\n' +
         'GROUP BY   DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(amount) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(amount) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY   DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY   DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(collections.created_at) as \'key1\', SUM(amount) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY   DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1412,10 +1464,20 @@ var avg_uscore_per_date = function(country_id, start_date, end_date){
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.User});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\',  ROUND(AVG(umbrella_score) ) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\',  ROUND(AVG(umbrella_score) ) as \'value\'\n' +
             'FROM Users\n' +
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(created_at) as \'key1\',  ROUND(AVG(umbrella_score) ) as \'value\'\n' +
+                'FROM Users\n' +
+                whereClause+'\n' +
+                'GROUP BY  DATE(created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
 
     return query;
@@ -1481,11 +1543,22 @@ var otp_user_per_date = function(country_id, start_date, end_date){
         'GROUP BY DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.AdminUserAccesse});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\') as \'key\', count(distinct  user_id ) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\') as \'key\', count(distinct  user_id ) as \'value\'\n' +
             'FROM AdminUserAccesses as adminUserAccesses\n' +
             'inner join Users as users on adminUserAccesses.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(adminUserAccesses.created_at) as \'key1\', count(distinct  user_id ) as \'value\'\n' +
+                'FROM AdminUserAccesses as adminUserAccesses\n' +
+                'inner join Users as users on adminUserAccesses.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(adminUserAccesses.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1551,10 +1624,20 @@ var unverified_users_per_date = function(country_id, start_date, end_date){
         'WHERE verified=0 \n'+
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.User});
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\',  COUNT(*) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(created_at, \'%a %D %M\') as \'key\',  COUNT(*) as \'value\'\n' +
             'FROM Users\n' +
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(created_at) as \'key1\',  COUNT(*) as \'value\'\n' +
+                'FROM Users\n' +
+                whereClause+'\n' +
+                'GROUP BY  DATE(created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1666,7 +1749,6 @@ var left_money_per_date_sum = function(country_id, start_date, end_date){
 };
 // 1
 var collection_count_per_date_with_status= function (country_id, start_date, end_date) {
-    
     var filter={};
     var whereClause = 'where collections.status = \'To-be-Collected\' and collections.date > now() ';
 
@@ -1675,16 +1757,16 @@ var collection_count_per_date_with_status= function (country_id, start_date, end
         filter.country_id = country_id;
         whereClause += and + ' users.country_id= :country_id ';
     }
-    /*and = whereClause !== 'WHERE' ? ' and ' : '';
+    and = whereClause !== 'WHERE' ? ' and ' : '';
     if (start_date) {
         filter.start_date = start_date;
-        whereClause += and + ' date>= :start_date ';
+        whereClause += and + ' collections.date>= :start_date ';
     }
     and = whereClause !== 'WHERE' ? ' and ' : '';
     if (end_date) {
         filter.end_date = end_date;
-        whereClause += and + ' date <= :end_date ';
-    }*/
+        whereClause += and + ' collections.date <= :end_date ';
+    }
 
     if (whereClause === 'WHERE') {
         whereClause = '';
@@ -1694,18 +1776,29 @@ var collection_count_per_date_with_status= function (country_id, start_date, end
         whereClause +
         '    GROUP BY DATE_FORMAT(collections.date, \'%a %D %M\');', {model: db.Collection});
 
-    if(!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('select  DATE_FORMAT(collections.date, \'%a %D %M\') as \'key\', count(collections.loan_id)  as \'value\'\n' +
+    if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
+        var script = 'select  DATE_FORMAT(collections.date, \'%a %D %M\') as \'key\', count(collections.loan_id)  as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            '    GROUP BY DATE_FORMAT(collections.date, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            '    GROUP BY DATE_FORMAT(collections.date, \'%a %D %M\');';
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'select  DATE(collections.date) as \'key1\', count(collections.loan_id)  as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                '    GROUP BY DATE(collections.date)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
 var collection_count_per_date_with_status_count= function (country_id, start_date, end_date) {
-    
     var filter={};
     var whereClause = 'where collections.status = \'To-be-Collected\' and collections.date > now() ';
     var and = whereClause !== 'WHERE' ? ' and ' : '';
@@ -1713,7 +1806,7 @@ var collection_count_per_date_with_status_count= function (country_id, start_dat
         filter.country_id = country_id;
         whereClause += and + ' users.country_id= :country_id ';
     }
-    /*and = whereClause !== 'WHERE' ? ' and ' : '';
+    and = whereClause !== 'WHERE' ? ' and ' : '';
     if (start_date) {
         filter.start_date = start_date;
         whereClause += and + ' date>= :start_date ';
@@ -1722,7 +1815,7 @@ var collection_count_per_date_with_status_count= function (country_id, start_dat
     if (end_date) {
         filter.end_date = end_date;
         whereClause += and + ' date <= :end_date ';
-    }*/
+    }
     if (whereClause === 'WHERE') {
         whereClause = '';
     }
@@ -1743,7 +1836,6 @@ var collection_count_per_date_with_status_count= function (country_id, start_dat
 };
 // 3
 var otp_user_per_date_by_current = function(country_id, start_date, end_date, admin_user_id){
-
     var filter = {};
     var whereClause = 'WHERE admin_user_id=' + admin_user_id;
     var and = whereClause !== 'WHERE' ? ' and ' : '';
@@ -1770,11 +1862,23 @@ var otp_user_per_date_by_current = function(country_id, start_date, end_date, ad
         'GROUP BY DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.AdminUserAccesse});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\') as \'key\', count(distinct  user_id ) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\') as \'key\', count(distinct  user_id ) as \'value\'\n' +
             'FROM AdminUserAccesses as adminUserAccesses\n' +
             'inner join Users as users on adminUserAccesses.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(adminUserAccesses.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(adminUserAccesses.created_at) as \'key1\', count(distinct  user_id ) as \'value\'\n' +
+                'FROM AdminUserAccesses as adminUserAccesses\n' +
+                'inner join Users as users on adminUserAccesses.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(adminUserAccesses.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1816,7 +1920,6 @@ var otp_user_per_date_by_current_count = function(country_id, start_date, end_da
 };
 // 5 - 4
 var collections_per_date_by_current = function(country_id, start_date, end_date, admin_user_id){
-
     var filter = {};
     var whereClause = 'WHERE collections.admin_user_id=' + admin_user_id;
     var and = whereClause !== 'WHERE' ? ' and ' : '';
@@ -1840,15 +1943,28 @@ var collections_per_date_by_current = function(country_id, start_date, end_date,
     var query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
         'FROM Collections as collections\n' +
         whereClause+'\n' +
-        'GROUP BY    DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
+        'GROUP BY DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY    DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(collections.created_at) as \'key1\', COUNT(collections.id) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1918,13 +2034,27 @@ var Distributes_per_date_by_current = function(country_id, start_date, end_date,
         'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');', {model: db.AdminCollectDistribute});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\') as \'key\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\') as \'key\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
             'FROM AdminCollectDistributes as adminCollectDistribute\n' +
             'inner join AdminUsers as adminUser on adminCollectDistribute.admin_user_id = adminUser.id \n'+
             'inner join Loans as loan on adminCollectDistribute.loan_id = loan.id \n'+
             'inner join Users as user on loan.user_id = user.id \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(adminCollectDistribute.created_at) as \'key1\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
+                'FROM AdminCollectDistributes as adminCollectDistribute\n' +
+                'inner join AdminUsers as adminUser on adminCollectDistribute.admin_user_id = adminUser.id \n'+
+                'inner join Loans as loan on adminCollectDistribute.loan_id = loan.id \n'+
+                'inner join Users as user on loan.user_id = user.id \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(adminCollectDistribute.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -1967,7 +2097,6 @@ var Distributes_per_date_by_current_count = function(country_id, start_date, end
 };
 // 4
 var issued_amount_per_date_by_current = function (country_id, start_date, end_date, admin_user_id) {
-
     var filter = {};
     var whereClause = 'WHERE loans.status = \'Active\' and admin_user_id = '+ admin_user_id;
     var and = whereClause !== 'WHERE' ? ' and ' : '';
@@ -1994,11 +2123,23 @@ var issued_amount_per_date_by_current = function (country_id, start_date, end_da
         'GROUP BY  DATE_FORMAT(created_at, \'%a %D %M\');', {model: db.Loan});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(loans.ammount_taken) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(loans.ammount_taken) as \'value\'\n' +
             'FROM Loans as loans\n' +
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT DATE(loans.created_at) as \'key1\', SUM(loans.ammount_taken) as \'value\'\n' +
+                'FROM Loans as loans\n' +
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(loans.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2066,12 +2207,25 @@ var collected_amount_per_date_by_current = function(country_id, start_date, end_
         whereClause+'\n' +
         'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(collections.amount) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(collections.amount) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(collections.created_at) as \'key1\', SUM(collections.amount) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2139,13 +2293,27 @@ var Distributes_per_date_by_company = function(country_id, start_date, end_date,
         'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');', {model: db.AdminCollectDistribute});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\') as \'key\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\') as \'key\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
             'FROM AdminCollectDistributes as adminCollectDistribute\n' +
             'inner join AdminUsers as adminUser on adminCollectDistribute.admin_user_id = adminUser.id \n'+
             'inner join Loans as loan on adminCollectDistribute.loan_id = loan.id \n'+
             'inner join Users as user on loan.user_id = user.id \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(adminCollectDistribute.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(adminCollectDistribute.created_at) as \'key1\', COUNT(adminCollectDistribute.id) as \'value\'\n' +
+                'FROM AdminCollectDistributes as adminCollectDistribute\n' +
+                'inner join AdminUsers as adminUser on adminCollectDistribute.admin_user_id = adminUser.id \n'+
+                'inner join Loans as loan on adminCollectDistribute.loan_id = loan.id \n'+
+                'inner join Users as user on loan.user_id = user.id \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(adminCollectDistribute.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2212,16 +2380,30 @@ var collections_per_date_by_company = function(country_id, start_date, end_date,
         'FROM Collections as collections \n' +
         'inner join AdminUsers as adminUser on collections.admin_user_id = adminUser.id \n'+
         whereClause+'\n' +
-        'GROUP BY      DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
+        'GROUP BY DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', COUNT(collections.id) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join AdminUsers as adminUser on collections.admin_user_id = adminUser.id \n'+
             'inner join Loans as loans on collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT  DATE(collections.created_at) as \'key1\', COUNT(collections.id) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join AdminUsers as adminUser on collections.admin_user_id = adminUser.id \n'+
+                'inner join Loans as loans on collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2292,12 +2474,25 @@ var issued_amount_per_date_by_company = function (country_id, start_date, end_da
         'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');', {model: db.Loan});
 
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(loans.ammount_taken) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(loans.created_at, \'%a %D %M\') as \'key\', SUM(loans.ammount_taken) as \'value\'\n' +
             'FROM Loans as loans\n' +
             'inner join AdminUsers as adminUser on loans.admin_user_id = adminUser.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY  DATE_FORMAT(loans.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT DATE(loans.created_at) as \'key\', SUM(loans.ammount_taken) as \'value\'\n' +
+                'FROM Loans as loans\n' +
+                'inner join AdminUsers as adminUser on loans.admin_user_id = adminUser.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY  DATE(loans.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2340,7 +2535,6 @@ var issued_amount_per_date_by_company_sum = function (country_id, start_date, en
 };
 // 4
 var collected_amount_per_date_by_company = function(country_id, start_date, end_date, adminUser){
-
     var filter = {};
     var whereClause = 'WHERE collections.status = \'Collected\' and company_id = '+ adminUser.company_id;
     var and = whereClause !== 'WHERE' ? ' and ' : '';
@@ -2367,13 +2561,27 @@ var collected_amount_per_date_by_company = function(country_id, start_date, end_
         whereClause+'\n' +
         'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');', {model: db.Collection});
     if(!!filter.country_id || !!filter.start_date || !!filter.end_date){
-        query = sequelize.sequelize.query('SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(collections.amount) as \'value\'\n' +
+        var script = 'SELECT  DATE_FORMAT(collections.created_at, \'%a %D %M\') as \'key\', SUM(collections.amount) as \'value\'\n' +
             'FROM Collections as collections\n' +
             'inner join AdminUsers as adminUser on collections.admin_user_id = adminUser.id \n'+
             'inner join Loans as loans on  collections.loan_id = loans.id \n'+
             'inner join Users as users on loans.user_id = users.id  \n'+
             whereClause+'\n' +
-            'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');', {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT} );
+            'GROUP BY     DATE_FORMAT(collections.created_at, \'%a %D %M\');';
+
+        if(!!filter.start_date && !!filter.end_date) {
+            script = 'SELECT DATE(collections.created_at) as \'key1\', SUM(collections.amount) as \'value\'\n' +
+                'FROM Collections as collections\n' +
+                'inner join AdminUsers as adminUser on collections.admin_user_id = adminUser.id \n'+
+                'inner join Loans as loans on  collections.loan_id = loans.id \n'+
+                'inner join Users as users on loans.user_id = users.id  \n'+
+                whereClause+'\n' +
+                'GROUP BY DATE(collections.created_at)';
+            query = sequelize.sequelize.query(createQueryScript(script, filter.start_date, filter.end_date), {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
+        else {
+            query = sequelize.sequelize.query(script, {replacements: filter, type:sequelize.sequelize.QueryTypes.SELECT});
+        }
     }
     return query;
 };
@@ -2664,5 +2872,35 @@ var revenue_per_date_sum= function(country_id, start_date, end_date){
     }
     return sum;
 }
+
+var createQueryScript = function(script, start_date, end_date){
+    return 'select DATE_FORMAT(key1, \'%a %D %M\') as \'key\' , value \n' +
+        'from (\n'+
+        'SELECT key1 , sum(value) as \'value\'\n' +
+        'FROM\n' +
+        '(\n' +
+        'select \n' +
+        'Date(t1.date) as \'key1\', 0 as \'value\' \n' +
+        'from\n' +
+        '(\n' +
+        '  select\n' +
+        '  a.Date as date\n' +
+        '  from (\n' +
+        '    select curdate() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY as Date\n' +
+        '    from (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as a\n' +
+        '    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as b\n' +
+        '    cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as c\n' +
+        '  ) a\n' +
+        '  where a.Date BETWEEN \''+start_date+'\' \n' +
+        '  and\n' +
+        '\''+end_date+'\'  \n' +
+        ')t1 \n'+
+
+        '\tunion all\n' +
+            script+'\n'+
+        ') T2\n' +
+        'GROUP BY key1\n' +
+        ') T3;'
+};
 module.exports = router;
 

@@ -200,7 +200,7 @@ router.put('/collect-money/:id', middlewares.validateAdminUser, middlewares.chec
         var sum = JSON.parse(JSON.stringify(result))
         sequelize.sequelize.query('Update CountryInvestments set status = \'Disabled\' where status =\'Active\' and country_id='+collection.Loan.User.country_id+' ;').then((updated)=> {
         var countryInvestment = {
-            amount_available: sum[0].sum+collectionObj.amount,
+            amount_available: parseInt(sum[0].sum)+parseInt(collectionObj.amount),
             country_id: collection.Loan.User.country_id,
             loan_id: collection.loan_id,
             status: 'Active'
@@ -208,13 +208,13 @@ router.put('/collect-money/:id', middlewares.validateAdminUser, middlewares.chec
         db.CountryInvestment.create(countryInvestment).then((countryInvestmentObj) => {
             var adminCollectDistributes ={
                 transactionType: 'Collect Money',
-                amount: collection.Loan.amount_pending,
+                amount: collectionObj.amount,
                 loan_id: collection.loan_id,
                 admin_user_id: req.user.id
             }
             db.AdminCollectDistribute.create(adminCollectDistributes)
             .then(()=>{
-                var amount_pending = collection.Loan.amount_pending - collection.amount;
+                var amount_pending = parseInt(collection.Loan.amount_pending) - parseInt(collection.amount);
                 collection.Loan.amount_pending = amount_pending;
                 if(amount_pending <=0){
                     collection.Loan.status = 'Closed';
@@ -222,7 +222,7 @@ router.put('/collect-money/:id', middlewares.validateAdminUser, middlewares.chec
                 collection.Loan.save().then(()=>{
                   db.User.findOne({where:{id:collection.Loan.user_id}})
                     .then((user)=>{
-                        user.available_amount=user.available_amount+ collection.Loan.amount_taken;
+                        user.available_amount=parseInt(user.available_amount)+ parseInt(collection.Loan.ammount_taken);
                         user.no_of_active_loans = user.no_of_active_loans  - 1;
                         user.save().then(()=>{
                             res.send(collectionObj);

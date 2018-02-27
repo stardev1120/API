@@ -26,7 +26,10 @@ else
 let db = {};
 const { name, user, pass, host, port } = config.db;
 
-const sequelize = new Sequelize(name, user, pass, { host, port, dialect: 'mysql'});
+const sequelize = new Sequelize(name, user, pass, { host, port, dialect: 'mysql',
+    dialectOptions: {
+        multipleStatements: true
+    }});
 fs.readdirSync(__dirname)
   .filter((file) => {
     return ((file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) === '.js'));

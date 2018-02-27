@@ -24,7 +24,7 @@ db.DistributionCenter.create(query)
 })
 
 router.get('/', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {
-/*    const {country_id} = req.headers;
+    const {country_id} = req.headers;
 var filterCountry = {
 }
 if(country_id){
@@ -41,7 +41,7 @@ db.DistributionCenter.findAll({offset: offset*1, limit: limit*1, where: {},
     .then((companies) => {
     res.send(companies)
 })
-.catch(err => next(err));*/
+.catch(err => next(err));
 });
 
 router.get('/company/count', middlewares.validateAdminUser, middlewares.checkAdminUserURLAuth, middlewares.checkAdminUserActionAuth, (req, res, next) => {

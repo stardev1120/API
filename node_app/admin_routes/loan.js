@@ -287,7 +287,7 @@ router.put('/issue-money/:id', middlewares.validateAdminUser, middlewares.checkA
             if(sum[0].sum > loan.ammount_taken){
                 sequelize.sequelize.query('Update CountryInvestments set status = \'Disabled\' where status =\'Active\' and country_id='+loan.User.country_id+';').then((updated)=>{
                     var countryInvestment = {
-                        amount_available: sum[0].sum - loan.ammount_taken,
+                        amount_available: parseInt(sum[0].sum) - parseInt(loan.ammount_taken),
                         country_id: loan.User.country_id,
                         loan_id: loan.id,
                         status: 'Active'
@@ -317,7 +317,7 @@ router.put('/issue-money/:id', middlewares.validateAdminUser, middlewares.checkA
                             .then(loanSaved => {
                                 var adminCollectDistributes ={
                                     transactionType: 'Issue Money',
-                                    amount: loan.amount_pending,
+                                    amount: loan.ammount_taken,
                                     loan_id: loan.id,
                                     admin_user_id: req.user.id
                                 }
