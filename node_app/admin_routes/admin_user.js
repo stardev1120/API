@@ -86,7 +86,7 @@ router.put('/reset-2-fa', middlewares.validateAdminUser, function(req, res) {
     }
     adminUser.update({ two_factor_temp_secret: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.two_factor_temp_secret: '',
         otpauth_url: (adminUser.Role.FeatureACLs[0] && adminUser.Role.FeatureACLs[0].other['2FA'] ) ? adminUser.otpauth_url: '', is2FAVerified: false}).then();
-    res.send({"message": "done"});
+    res.send({"message": "done", "otpauth_url": adminUser.otpauth_url});
 })
 .catch(err => next(new Errors.InternalError(err.message)))
 
@@ -262,7 +262,7 @@ else {
     db.AdminUser.findOne({where: {id: req.params['id']}})
         .then((adminUser) => {
         if(!adminUser)return next(new Errors.Validation("Counld not find a user with this email address."));
-    if(req.user.Role.role_id !== 1 && adminUser.role_id === 1) {
+    if(req.user.role_id !== 1 && adminUser.role_id === 1) {
         return next(new Errors.Forbidden("You do not have the permission to create super admin"))
     }
     adminUser.name = name;
